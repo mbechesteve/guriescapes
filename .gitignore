@@ -1,3 +1,17 @@
+# Dependencies
+node_modules/
+
+# SvelteKit / Vite build output
+/.svelte-kit/
+/build/
+/.vercel/
+/.output/
+
+# Environment
+.env
+.env.*
+!.env.example
+
 # Local tooling / editor config
 .claude/
 .vscode/
@@ -7,7 +21,4 @@
 .DS_Store
 Thumbs.db
 
-# Dependencies / build (none currently, but just in case)
-node_modules/
-dist/
 *.log
