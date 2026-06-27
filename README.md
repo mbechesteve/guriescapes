@@ -39,8 +39,8 @@ the folder on any static host (Vercel, Netlify, S3, etc.).
 The copy doc instructs: *"Replace every '___' with confirmed figures before
 publishing. Pricing and ROI shown are placeholders."*
 
-- **Prices** — currently `USD 285,000` (Villa A) / `USD 289,000` (Villa B) and
-  "From USD 285,000" in the hero. Verify with sales and update in `index.html`,
+- **Prices** — currently `USD 90,000` (Villa A) / `USD 94,000` (Villa B) and
+  "From USD 90,000" in the hero. Verify with sales and update in `index.html`,
   `villa-a.html`, `villa-b.html`.
 - **Phone number** — `+255 ___ ___ ___` appears in the enquiry section and footer
   (and the `tel:`/`wa.me/` links). Replace with the real number.
