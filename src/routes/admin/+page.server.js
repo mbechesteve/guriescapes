@@ -3,6 +3,7 @@ import { ObjectId } from 'mongodb';
 import { enquiries, pageviews } from '$lib/server/db';
 
 const STATUSES = ['New', 'Contacted', 'Viewing', 'Negotiating', 'Won', 'Lost'];
+const PAGE_SIZE = 20;
 
 const PAGE_LABELS = {
   '/': 'Home',
@@ -10,21 +11,58 @@ const PAGE_LABELS = {
   '/villa-b': 'Villa B'
 };
 
-export async function load() {
+function escapeRegex(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+export async function load({ url }) {
+  const pageNum = Math.max(1, parseInt(url.searchParams.get('page') || '1', 10) || 1);
+  const q = (url.searchParams.get('q') || '').trim().slice(0, 100);
+  const status = url.searchParams.get('status') || 'all';
+  const source = url.searchParams.get('source') || 'all';
+
+  const filter = {};
+  if (STATUSES.includes(status)) filter.status = status;
+  if (source && source !== 'all') filter.source = source;
+  if (q) {
+    const rx = new RegExp(escapeRegex(q), 'i');
+    filter.$or = [
+      { firstname: rx }, { lastname: rx }, { email: rx }, { phone: rx },
+      { interest: rx }, { message: rx }, { notes: rx }, { nextStep: rx }
+    ];
+  }
+
   let items = [];
-  let views = [];
-  let totalViews = 0;
-  let viewsLast7 = 0;
+  let total = 0;
+  let totalLeads = 0;
+  let statusCounts = Object.fromEntries(STATUSES.map((s) => [s, 0]));
+  let sources = [];
   let dbError = null;
 
   try {
     const col = await enquiries();
-    items = await col.find({}).sort({ createdAt: -1 }).limit(1000).toArray();
+    total = await col.countDocuments(filter);
+    items = await col
+      .find(filter)
+      .sort({ createdAt: -1 })
+      .skip((pageNum - 1) * PAGE_SIZE)
+      .limit(PAGE_SIZE)
+      .toArray();
+    totalLeads = await col.countDocuments({});
+    const sc = await col.aggregate([{ $group: { _id: '$status', count: { $sum: 1 } } }]).toArray();
+    for (const r of sc) {
+      const k = STATUSES.includes(r._id) ? r._id : 'New';
+      statusCounts[k] += r.count;
+    }
+    sources = (await col.distinct('source')).filter(Boolean);
   } catch (e) {
     console.error('Failed to load enquiries:', e);
     dbError = 'Could not connect to the database. Check MONGODB_URI.';
   }
 
+  let views = [];
+  let totalViews = 0;
+  let viewsLast7 = 0;
   try {
     const pv = await pageviews();
     const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
@@ -47,17 +85,18 @@ export async function load() {
     console.error('Failed to load analytics:', e);
   }
 
-  const statusCounts = Object.fromEntries(STATUSES.map((s) => [s, 0]));
-  for (const it of items) {
-    const s = STATUSES.includes(it.status) ? it.status : 'New';
-    statusCounts[s]++;
-  }
-
   return {
     dbError,
     statuses: STATUSES,
     statusCounts,
+    totalLeads,
     analytics: { views, totalViews, viewsLast7 },
+    sources,
+    filters: { q, status, source },
+    page: pageNum,
+    pageSize: PAGE_SIZE,
+    total,
+    totalPages: Math.max(1, Math.ceil(total / PAGE_SIZE)),
     enquiries: items.map((d) => ({
       id: d._id.toString(),
       firstname: d.firstname || '',

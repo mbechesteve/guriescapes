@@ -1,10 +1,13 @@
 <script>
   import { enhance } from '$app/forms';
+  import { goto } from '$app/navigation';
   export let data;
 
-  let q = '';
-  let sourceFilter = 'all';
-  let statusFilter = 'all';
+  // Filter state seeded from the server (persists across same-page navigations).
+  let q = data.filters.q;
+  let statusFilter = data.filters.status;
+  let sourceFilter = data.filters.source;
+  let searchTimer;
 
   let savingId = null;
   let savedId = null;
@@ -18,17 +21,24 @@
     Lost: { bg: '#8a8577', fg: '#fff' }
   };
 
-  $: sources = ['all', ...Array.from(new Set(data.enquiries.map((e) => e.source).filter(Boolean)))];
-
-  $: filtered = data.enquiries.filter((e) => {
-    const okSource = sourceFilter === 'all' || e.source === sourceFilter;
-    const okStatus = statusFilter === 'all' || e.status === statusFilter;
-    const hay = `${e.firstname} ${e.lastname} ${e.email} ${e.phone} ${e.interest} ${e.message} ${e.notes} ${e.nextStep}`.toLowerCase();
-    const okQ = !q.trim() || hay.includes(q.trim().toLowerCase());
-    return okSource && okStatus && okQ;
-  });
-
+  $: sourceOptions = ['all', ...data.sources];
   $: maxViews = Math.max(1, ...data.analytics.views.map((v) => v.count));
+
+  function buildUrl(page = 1) {
+    const p = new URLSearchParams();
+    if (q.trim()) p.set('q', q.trim());
+    if (statusFilter && statusFilter !== 'all') p.set('status', statusFilter);
+    if (sourceFilter && sourceFilter !== 'all') p.set('source', sourceFilter);
+    if (page > 1) p.set('page', String(page));
+    const qs = p.toString();
+    return '/admin' + (qs ? `?${qs}` : '');
+  }
+  const applyFilters = () => goto(buildUrl(1), { keepFocus: true, noScroll: true });
+  function onSearch() {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(applyFilters, 350);
+  }
+  const gotoPage = (n) => goto(buildUrl(n), { noScroll: true });
 
   function fmt(iso) {
     if (!iso) return '—';
@@ -51,6 +61,7 @@
   </header>
 
   <main class="wrap-admin">
+    <img class="dash-frond" src="/assets/img/frond.svg" alt="" aria-hidden="true" />
     <h1>Dashboard</h1>
 
     {#if data.dbError}
@@ -59,10 +70,10 @@
       <!-- OVERVIEW -->
       <section class="overview">
         <div class="stat-row">
-          <div class="stat"><span class="n">{data.enquiries.length}</span><span class="l">Total leads</span></div>
-          <div class="stat"><span class="n">{data.statusCounts.New}</span><span class="l">New</span></div>
+          <div class="stat"><span class="n">{data.totalLeads}</span><span class="l">Total leads</span></div>
+          <div class="stat accent-wood"><span class="n">{data.statusCounts.New}</span><span class="l">New</span></div>
           <div class="stat"><span class="n">{data.statusCounts.Contacted}</span><span class="l">Contacted</span></div>
-          <div class="stat"><span class="n">{data.statusCounts.Won}</span><span class="l">Won</span></div>
+          <div class="stat accent-won"><span class="n">{data.statusCounts.Won}</span><span class="l">Won</span></div>
           <div class="stat"><span class="n">{data.analytics.totalViews}</span><span class="l">Page views</span></div>
           <div class="stat"><span class="n">{data.analytics.viewsLast7}</span><span class="l">Views · 7 days</span></div>
         </div>
@@ -71,7 +82,7 @@
           <div class="panel">
             <h3>Pipeline</h3>
             {#each data.statuses as s}
-              <div class="bar-row">
+              <div class="bar-row" class:zero={data.statusCounts[s] === 0}>
                 <span class="bar-label"><i class="dot" style:background={statusColors[s].bg}></i>{s}</span>
                 <span class="bar-track">
                   <span class="bar-fill" style:width={`${(data.statusCounts[s] / Math.max(1, data.enquiries.length)) * 100}%`} style:background={statusColors[s].bg}></span>
@@ -100,26 +111,26 @@
 
       <!-- LEADS -->
       <div class="head">
-        <h2>Leads <span class="count">{filtered.length !== data.enquiries.length ? `${filtered.length} of ${data.enquiries.length}` : data.enquiries.length}</span></h2>
+        <h2>Leads <span class="count">{data.total}</span></h2>
         <div class="filters">
-          <input type="search" placeholder="Search…" bind:value={q} />
-          <select bind:value={statusFilter}>
+          <input type="search" placeholder="Search name, email, notes…" bind:value={q} on:input={onSearch} />
+          <select bind:value={statusFilter} on:change={applyFilters}>
             <option value="all">All statuses</option>
             {#each data.statuses as s}<option value={s}>{s}</option>{/each}
           </select>
-          <select bind:value={sourceFilter}>
-            {#each sources as s}<option value={s}>{s === 'all' ? 'All sources' : sourceLabel(s)}</option>{/each}
+          <select bind:value={sourceFilter} on:change={applyFilters}>
+            {#each sourceOptions as s}<option value={s}>{s === 'all' ? 'All sources' : sourceLabel(s)}</option>{/each}
           </select>
         </div>
       </div>
 
-      {#if data.enquiries.length === 0}
+      {#if data.totalLeads === 0}
         <div class="notice">No enquiries yet. Submissions from the site forms will appear here.</div>
-      {:else if filtered.length === 0}
-        <div class="notice">No leads match your filters.</div>
+      {:else if data.total === 0}
+        <div class="notice">No leads match your filters. <button class="link" on:click={() => { q=''; statusFilter='all'; sourceFilter='all'; applyFilters(); }}>Clear filters</button></div>
       {:else}
         <div class="list">
-          {#each filtered as e (e.id)}
+          {#each data.enquiries as e (e.id)}
             <article class="card">
               <div class="card-top">
                 <div>
@@ -183,6 +194,14 @@
             </article>
           {/each}
         </div>
+
+        {#if data.totalPages > 1}
+          <div class="pager">
+            <button on:click={() => gotoPage(data.page - 1)} disabled={data.page <= 1}>← Prev</button>
+            <span class="pager-info">Page {data.page} of {data.totalPages} · {data.total} leads</span>
+            <button on:click={() => gotoPage(data.page + 1)} disabled={data.page >= data.totalPages}>Next →</button>
+          </div>
+        {/if}
       {/if}
     {/if}
   </main>
@@ -204,25 +223,39 @@
   .admin-bar button { background: var(--wood); color: #fff; border: 0; border-radius: 50px; padding: 0.55em 1.2em; font-family: var(--f-body); font-size: 0.82rem; cursor: pointer; }
   .admin-bar button:hover { background: #a97c47; }
 
-  .wrap-admin { max-width: 1040px; margin: 0 auto; padding: clamp(24px, 4vw, 44px) clamp(16px, 4vw, 40px) 90px; }
-  h1 { font-family: var(--f-display); font-weight: 400; font-size: clamp(2rem, 4vw, 2.8rem); color: var(--ink); margin: 0 0 1.6rem; }
+  .wrap-admin { position: relative; max-width: 1040px; margin: 0 auto; padding: clamp(24px, 4vw, 44px) clamp(16px, 4vw, 40px) 90px; }
+  .dash-frond { position: absolute; top: 6px; right: clamp(10px, 4vw, 30px); width: clamp(120px, 16vw, 200px); opacity: 0.07; transform: rotate(-8deg); pointer-events: none; }
+  h1 { font-family: var(--f-display); font-weight: 400; font-size: clamp(2.2rem, 4vw, 3rem); color: var(--ink); margin: 0 0 1.6rem; position: relative; }
 
   /* Overview */
-  .stat-row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
-  .stat { background: #fff; padding: 1.1rem 1rem; text-align: center; }
-  .stat .n { display: block; font-family: var(--f-display); font-size: clamp(1.6rem, 3vw, 2.3rem); color: var(--ink); line-height: 1; }
-  .stat .l { display: block; margin-top: 0.4rem; font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); }
+  .stat-row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; position: relative; }
+  .stat { background: #fff; padding: 1.2rem 1rem; text-align: center; transition: background 0.2s ease; }
+  .stat:hover { background: #fffdf7; }
+  .stat .n {
+    display: block;
+    font-family: var(--f-body);
+    font-weight: 600;
+    font-size: clamp(1.7rem, 3vw, 2.3rem);
+    font-variant-numeric: tabular-nums lining-nums;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .stat.accent-wood .n { color: var(--wood); }
+  .stat.accent-won .n { color: #3f6b3a; }
+  .stat .l { display: block; margin-top: 0.45rem; font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-soft); }
 
   .panels { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
   .panel { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 1.3rem 1.4rem; }
   .panel h3 { font-family: var(--f-body); font-weight: 600; font-size: 0.74rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-soft); margin: 0 0 1rem; }
-  .bar-row { display: grid; grid-template-columns: 130px 1fr auto; align-items: center; gap: 0.8rem; margin-bottom: 0.6rem; font-size: 0.9rem; }
+  .bar-row { display: grid; grid-template-columns: 130px 1fr auto; align-items: center; gap: 0.8rem; margin-bottom: 0.55rem; font-size: 0.9rem; transition: opacity 0.2s ease; }
+  .bar-row.zero { opacity: 0.4; }
   .bar-label { color: var(--ink); display: flex; align-items: center; gap: 0.5rem; }
-  .dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
-  .bar-track { height: 8px; background: var(--sand); border-radius: 6px; overflow: hidden; }
-  .bar-fill { display: block; height: 100%; border-radius: 6px; background: var(--sage); transition: width 0.4s ease; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+  .bar-track { height: 6px; background: var(--sand); border-radius: 6px; overflow: hidden; }
+  .bar-fill { display: block; height: 100%; border-radius: 6px; background: var(--sage); transition: width 0.4s ease; min-width: 0; }
   .bar-fill.wood { background: var(--wood); }
-  .bar-n { color: var(--ink-soft); font-variant-numeric: tabular-nums; min-width: 2ch; text-align: right; }
+  .bar-n { color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums lining-nums; min-width: 2ch; text-align: right; }
   .bar-n small { color: var(--ink-soft); opacity: 0.7; }
   .muted { color: var(--ink-soft); font-size: 0.9rem; margin: 0; }
 
@@ -236,6 +269,13 @@
   .filters input:focus, .filters select:focus { outline: none; border-color: var(--wood); }
 
   .notice { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 2rem; color: var(--ink-soft); text-align: center; }
+  .notice .link { background: none; border: 0; color: var(--wood); cursor: pointer; font: inherit; text-decoration: underline; padding: 0; }
+
+  .pager { display: flex; align-items: center; justify-content: center; gap: 1.2rem; margin-top: 1.8rem; }
+  .pager button { background: #fff; border: 1px solid var(--line); border-radius: 50px; padding: 0.6em 1.3em; font-family: var(--f-body); font-size: 0.88rem; color: var(--ink); cursor: pointer; transition: 0.2s ease; }
+  .pager button:hover:not(:disabled) { border-color: var(--wood); color: var(--wood); }
+  .pager button:disabled { opacity: 0.4; cursor: default; }
+  .pager-info { font-size: 0.85rem; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
   .notice.err { border-color: #d8b4a6; color: #a3432b; background: #fbf1ec; }
 
   .list { display: grid; gap: 1rem; }

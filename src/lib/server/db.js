@@ -19,9 +19,21 @@ export async function getDb() {
   return client.db(dbName);
 }
 
+let enquiriesIndexed = false;
 export async function enquiries() {
   const db = await getDb();
-  return db.collection('enquiries');
+  const col = db.collection('enquiries');
+  if (!enquiriesIndexed) {
+    enquiriesIndexed = true;
+    try {
+      await col.createIndex({ createdAt: -1 });
+      await col.createIndex({ status: 1 });
+      await col.createIndex({ source: 1 });
+    } catch {
+      enquiriesIndexed = false;
+    }
+  }
+  return col;
 }
 
 export async function pageviews() {
