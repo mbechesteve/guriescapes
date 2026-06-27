@@ -22,15 +22,21 @@
   var links = document.getElementById('navLinks');
   if (toggle && links) {
     var menuOpen = false;
+    var scrim = document.createElement('div');
+    scrim.className = 'nav-scrim';
+    body.appendChild(scrim);
     function setMenu(open) {
       menuOpen = open;
       links.classList.toggle('open', open);
+      scrim.classList.toggle('open', open);
       toggle.classList.toggle('active', open);
+      body.classList.toggle('nav-open', open);
       toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
       toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
       if (open) lock(); else unlock();
     }
     toggle.addEventListener('click', function () { setMenu(!menuOpen); });
+    scrim.addEventListener('click', function () { setMenu(false); });
     links.querySelectorAll('a').forEach(function (a) {
       a.addEventListener('click', function () { if (menuOpen) setMenu(false); });
     });
