@@ -1,23 +1,50 @@
-import { siteContent, villas } from './db';
+import { siteContent, villas, meta } from './db';
 import { defaultSiteContent, defaultVillas } from '$lib/content/defaults';
 
-let seeded = false;
+// Bump this whenever defaults change and you want the change pushed to an
+// already-seeded database exactly once. Each bump re-applies the corrected
+// defaults a single time, then leaves admin edits alone until the next bump.
+const CONTENT_VERSION = 2;
 
-/** Seed siteContent + villas from defaults once, if empty. */
+let synced = false;
+
+/**
+ * One-time, version-gated content sync. On a fresh DB it seeds everything.
+ * On an already-seeded DB whose stored version is behind, it re-applies the
+ * corrected defaults once (site content + the default villas, by slug —
+ * villas added in the admin are left untouched), then records the version so
+ * future deploys don't overwrite admin edits.
+ */
 export async function ensureSeeded() {
-  if (seeded) return;
+  if (synced) return;
   try {
-    const sc = await siteContent();
-    if (!(await sc.findOne({ _id: 'site' }))) {
-      await sc.insertOne({ ...defaultSiteContent });
+    const m = await meta();
+    const cur = await m.findOne({ _id: 'content' });
+    const applied = cur?.version || 0;
+
+    if (applied < CONTENT_VERSION) {
+      const sc = await siteContent();
+      await sc.replaceOne({ _id: 'site' }, { ...defaultSiteContent }, { upsert: true });
+
+      const vc = await villas();
+      for (const v of defaultVillas) {
+        await vc.updateOne(
+          { slug: v.slug },
+          { $set: { ...v }, $setOnInsert: { createdAt: new Date() } },
+          { upsert: true }
+        );
+      }
+
+      await m.updateOne(
+        { _id: 'content' },
+        { $set: { version: CONTENT_VERSION, appliedAt: new Date() } },
+        { upsert: true }
+      );
+      console.log(`Content synced to version ${CONTENT_VERSION}`);
     }
-    const vc = await villas();
-    if ((await vc.countDocuments({})) === 0) {
-      await vc.insertMany(defaultVillas.map((v) => ({ ...v, createdAt: new Date() })));
-    }
-    seeded = true;
+    synced = true;
   } catch (e) {
-    console.error('Seeding failed:', e);
+    console.error('Content sync failed:', e);
   }
 }
 

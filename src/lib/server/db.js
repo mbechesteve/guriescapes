@@ -46,6 +46,11 @@ export async function siteContent() {
   return db.collection('siteContent');
 }
 
+export async function meta() {
+  const db = await getDb();
+  return db.collection('meta');
+}
+
 let villasIndexed = false;
 export async function villas() {
   const db = await getDb();

@@ -416,6 +416,7 @@ body.nav-open .site-header.scrolled{
 }
 .lb-back:hover{background:var(--wood);border-color:var(--wood)}
 .lb-count{font-family:var(--f-body)}
+.lb-caption{font-family:var(--f-display);font-style:italic;font-size:1.1rem;letter-spacing:.01em;text-transform:none;color:var(--cream);opacity:.95}
 @media (prefers-reduced-motion:reduce){.lb,.lb-img{transition:none}}
 
 /* ---------- Responsive ---------- */

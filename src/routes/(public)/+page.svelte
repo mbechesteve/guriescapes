@@ -43,9 +43,9 @@
   <div class="wrap split">
     <div class="reveal">
       <p class="eyebrow">Discover an effortless island life</p>
-      <h2>Slow down.<br />You have arrived.</h2>
-      <p class="lede" style="margin-top:1.6rem">Guri Escapes Pongwe is a pair of contemporary villas on the quiet, reef-sheltered east coast of Zanzibar. Each pairs a private pool and makuti-thatched roof with open, light-filled living — a place that feels, from the first deep breath, unhurried, natural and quietly luxurious.</p>
-      <p>Designed for couples and remote professionals who value calm and privacy over crowds, and structured so it earns its keep while you're away.</p>
+      <h2>Slow down,<br />You have arrived.</h2>
+      <p class="lede" style="margin-top:1.6rem">Pongwe Villas is a pair of contemporary villas on the quiet, reef-sheltered east coast of Zanzibar. Each pairs a private pool and makuti-thatched roof with open, light-filled living, a place that feels from the first deep breath, unhurried, natural and quietly luxurious.</p>
+      <p>Designed for couples and remote professionals who value calm and privacy over crowds and structured in a way that helps you earn while you're away.</p>
       <a href="#enquire" class="btn btn-ghost" style="margin-top:.8rem">Enquire now <span class="arrow">→</span></a>
     </div>
     <div class="split-media reveal" data-d="1">
@@ -75,9 +75,9 @@
 <section class="section-pad" id="villas">
   <div class="wrap">
     <div class="reveal" style="max-width:680px">
-      <p class="eyebrow">Discover our villas</p>
-      <h2>{villas.length === 1 ? 'One quiet coast.' : 'Villas on one quiet coast.'}</h2>
-      <p class="lede" style="margin-top:1.4rem">Design-led villas on their own walled plots — take one as a private escape, or several as a managed group.</p>
+      <p class="eyebrow">Discover our two villas</p>
+      <h2>Two villas, one quiet coast.</h2>
+      <p class="lede" style="margin-top:1.4rem">Two near-identical villas on their own plot, take one as a private escape or both as a managed pair.</p>
     </div>
     <div class="villa-grid">
       {#each villas as v, i}
@@ -119,7 +119,7 @@
       <div class="pillar reveal" data-d="3">
         <svg class="p-ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M30 8l10 10-22 22-10 2 2-10z" /><path d="M26 12l10 10" /></svg>
         <h3>Maintenance &amp; care</h3>
-        <p>Maintenance, housekeeping and quality control — the villa kept guest-ready, always.</p>
+        <p>Maintenance, housekeeping and quality control, the villa is kept guest-ready always.</p>
       </div>
     </div>
   </div>
@@ -130,16 +130,16 @@
   <div class="invest-bg"><img src="/assets/img/beach-palm.jpg" alt="" /></div>
   <div class="wrap">
     <div class="reveal" style="max-width:680px">
-      <p class="eyebrow">Why invest in Pongwe</p>
+      <p class="eyebrow">Why invest in Pongwe, Zanzibar</p>
       <h2 style="color:var(--cream)">The headline performer in East African property.</h2>
     </div>
     <div class="invest-stats">
-      <div class="invest-stat reveal"><div class="num">18–22%</div><div class="lab">ROI potential</div><div class="cap">Target gross yields for Zanzibar villas — best in the region.</div></div>
+      <div class="invest-stat reveal"><div class="num">15–18%</div><div class="lab">ROI potential</div><div class="cap">Target gross yields for Zanzibar villas — best in the region.</div></div>
       <div class="invest-stat reveal" data-d="1"><div class="num">65%+</div><div class="lab">Occupancy</div><div class="cap">Island-wide and rising with record tourism.</div></div>
       <div class="invest-stat reveal" data-d="2"><div class="num">30–40%</div><div class="lab">Capital growth</div><div class="cap">Projected land appreciation to 2026.</div></div>
       <div class="invest-stat reveal" data-d="3"><div class="num">100%</div><div class="lab">International buyers</div><div class="cap">Secure leasehold structure built for foreign owners.</div></div>
     </div>
-    <p class="invest-note reveal">Tourist arrivals are on track to surpass 2 million by 2026 — and villas earn in USD, a natural hedge against currency movement.</p>
+    <p class="invest-note reveal">Tourist arrivals are on track to surpass 1 million by 2026 — and villas earn in USD, a natural hedge against currency movement.</p>
   </div>
 </section>
 
@@ -154,12 +154,56 @@
       <p class="eyebrow">Where comfort meets nature</p>
       <h2>Inside the villa.</h2>
       <p class="lede" style="margin-top:1.4rem">Single-storey and open-plan, each villa runs the lounge and kitchen the full width of the home, then dissolves into the pool terrace through full-height sliding glass.</p>
-      <p>Two quiet, garden-facing bedrooms sit to one side. High ceilings, shaded verandas and cross-ventilation keep it naturally cool — lower running costs, a better guest experience.</p>
+      <p>Two quiet, pool and garden-facing bedrooms sit to one side. High ceilings, shaded verandas and cross-ventilation keep it naturally cool, lowering running costs and improving the guest experience.</p>
+    </div>
+  </div>
+  <div class="wrap" style="margin-top:clamp(2.4rem,5vw,4rem)">
+    <div class="spec-grid reveal">
+      <div class="spec"><svg class="s-ic" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M4 22v-6a4 4 0 0 1 4-4h16a4 4 0 0 1 4 4v6M4 26v-4h24v4M8 12V9a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3" /></svg><span class="s-k">Bedrooms</span><span class="s-v">2, pool &amp; garden-facing</span></div>
+      <div class="spec"><svg class="s-ic" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="24" height="18" rx="2" /><path d="M4 14h24M11 8v6" /></svg><span class="s-k">Living</span><span class="s-v">42 m² open-plan</span></div>
+      <div class="spec"><svg class="s-ic" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="20" height="20" rx="2" /><path d="M6 18h20M13 6v6M19 6v6" /></svg><span class="s-k">Kitchen / dining</span><span class="s-v">31 m², island</span></div>
+      <div class="spec"><svg class="s-ic" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20c3 0 3 2 6.5 2s3.5-2 6.5-2 3 2 6.5 2 3.5-2 6.5-2M3 26c3 0 3 2 6.5 2s3.5-2 6.5-2 3 2 6.5 2 3.5-2 6.5-2M10 16V8a3 3 0 0 1 6 0" /></svg><span class="s-k">Pool</span><span class="s-v">Private, sun deck</span></div>
+      <div class="spec"><svg class="s-ic" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M16 5 4 14h24L16 5zM6 26h20" /></svg><span class="s-k">Roof</span><span class="s-v">Makuti-style thatch</span></div>
+      <div class="spec"><svg class="s-ic" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="22" height="22" rx="1" /><path d="M5 12h22M12 5v22" /></svg><span class="s-k">Plot</span><span class="s-v">≈ 1,100 m², walled</span></div>
     </div>
   </div>
 </section>
 
-<!-- 08 · FAQ -->
+<!-- 08 · VILLA FEATURES -->
+<section class="section-pad" id="features" style="background:var(--sand)">
+  <div class="wrap">
+    <div class="reveal" style="max-width:620px">
+      <p class="eyebrow">Details that elevate every day</p>
+      <h2>Villa features.</h2>
+    </div>
+    <div class="features-grid reveal">
+      <div class="feature"><svg class="f-ic" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M3 17c2.5 0 2.5 1.6 5 1.6S10.5 17 13 17s2.5 1.6 5 1.6S20.5 17 23 17M3 22c2.5 0 2.5 1.6 5 1.6S10.5 22 13 22s2.5 1.6 5 1.6S20.5 22 23 22M8 13V7a3 3 0 0 1 6 0" /></svg><span>Private swimming pool &amp; sun-deck terrace</span></div>
+      <div class="feature"><svg class="f-ic" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="20" height="20" rx="1" /><path d="M14 4v20M4 14h20" /></svg><span>Full-height sliding glass to the garden</span></div>
+      <div class="feature"><svg class="f-ic" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4 4 12h20L14 4zM6 22h16" /><path d="M7 12v10M14 12v10M21 12v10" /></svg><span>Makuti-thatched roof on treated timber</span></div>
+      <div class="feature"><svg class="f-ic" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="18" height="18" rx="1" /><path d="M5 15h18M11 5v5M16 5v5" /></svg><span>Open-plan island kitchen</span></div>
+      <div class="feature"><svg class="f-ic" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3 5 14h6l-1 11 9-14h-6z" /></svg><span>On-plot parking &amp; back-up power (genset)</span></div>
+      <div class="feature"><svg class="f-ic" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="20" height="20" rx="1" /><path d="M4 4v20M24 4v20" /></svg><span>Walled, private grounds — room to breathe</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 09 · PATH TO OWNERSHIP -->
+<section class="path section-pad" id="ownership">
+  <div class="wrap">
+    <div class="reveal" style="max-width:620px">
+      <p class="eyebrow">Your path to ownership</p>
+      <h2>Four steps to island income.</h2>
+    </div>
+    <div class="steps">
+      <div class="step reveal"><span class="dot"></span><span class="st-n">01</span><h3>Choose your villa</h3><p>Select Villa A, Villa B, or both — designed for resort-grade living and strong rental performance.</p></div>
+      <div class="step reveal" data-d="1"><span class="dot"></span><span class="st-n">02</span><h3>Reserve with a deposit</h3><p>Secure your villa with a 20% deposit that confirms availability and locks today's pricing.</p></div>
+      <div class="step reveal" data-d="2"><span class="dot"></span><span class="st-n">03</span><h3>Pay to milestones</h3><p>Payments release against certified construction milestones — a clear, manageable structure throughout the build.</p></div>
+      <div class="step reveal" data-d="3"><span class="dot"></span><span class="st-n">04</span><h3>Earn, hands-free</h3><p>On completion your villa joins the managed rental pool, generating income with regular owner distributions.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 · FAQ -->
 <section class="section-pad" id="faq">
   <div class="wrap">
     <div class="reveal" style="max-width:620px">

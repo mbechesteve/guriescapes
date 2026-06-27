@@ -6,26 +6,26 @@ export const defaultSiteContent = {
   hero: {
     eyebrow: "Pongwe · Zanzibar's East Coast",
     headline: "Own a private pool villa on Zanzibar's calm east coast.",
-    sub: 'Two design-led, fully managed villas in Pongwe — built for hands-off income, owned for a lifetime of slow island mornings.',
+    sub: "Income while you're away. Paradise when you're here. Two design-led, fully managed villas in Pongwe, hands-off returns and a lifetime of slow island mornings.",
     priceFrom: '90,000'
   },
   metrics: [
     { num: 'USD 90k', label: 'Starting price', cap: 'Per villa, leasehold' },
-    { num: '18–22%', label: 'Target gross yield', cap: 'Short-stay, depending on unit & season' },
+    { num: '15–18%', label: 'Target gross yield', cap: 'Short-stay, depending on unit & season' },
     { num: '20%', label: 'Down payment', cap: 'Tailored milestone payment plans' },
     { num: '30–40%', label: 'Capital appreciation', cap: 'Projected land growth to 2026*' }
   ],
   contact: {
     email: 'hello@guriescapes.com',
-    phone: '+255 ___ ___ ___',
-    whatsapp: '255000000000',
+    phone: '+1 641 955 3743',
+    whatsapp: '16419553743',
     instagram: 'https://instagram.com/guriescapes',
     facebook: 'https://facebook.com/guriescapes'
   },
   faq: [
     {
       q: 'Can international buyers own property in Zanzibar?',
-      a: 'Yes. Foreign buyers hold a long leasehold — up to 99 years, renewable — most straightforwardly inside government-approved (ZIPA) developments. A qualifying purchase (from USD 100,000) can also support an investment residence permit. We provide full legal and visa guidance for a smooth, compliant process.'
+      a: 'Yes. Foreign buyers hold a long leasehold, up to 99 years, broken down to 33 years renewable, most straightforwardly inside government-approved (ZIPA) developments. A qualifying purchase (from USD 100,000) can also support an investment residence permit. We provide full legal and visa guidance for a smooth, compliant process.'
     },
     {
       q: 'Is the villa managed for me?',
@@ -33,7 +33,7 @@ export const defaultSiteContent = {
     },
     {
       q: 'How does tourism support returns in Pongwe?',
-      a: "Zanzibar's visitor numbers are climbing toward 2 million arrivals by 2026. Pongwe's calm, design-led east coast is exactly what today's premium traveller seeks, driving strong, year-round short-stay demand for private pool villas."
+      a: "Zanzibar's visitor numbers are climbing toward 1 million arrivals by 2026. Pongwe's calm, design-led east coast is exactly what today's premium traveller seeks, driving strong, year-round short-stay demand for private pool villas."
     },
     {
       q: 'Does Pongwe offer long-term growth?',
@@ -60,11 +60,11 @@ export const defaultVillas = [
     heroImage: '/assets/img/interior-lamp.jpg',
     cardImage: '/assets/img/interior-lamp.jpg',
     intro: [
-      'Villa A is single-storey and open-plan — the lounge and island kitchen run the full width of the home, then open onto a private pool terrace through full-height sliding glass. Two quiet, garden-facing bedrooms sit to one side.',
+      'Villa A is single-storey and open-plan — the lounge and island kitchen run the full width of the home, then open onto a private pool terrace through full-height sliding glass. Two quiet, pool and garden-facing bedrooms sit to one side.',
       "High ceilings, shaded verandas and natural cross-ventilation keep it cool without working the air-conditioning — lower running costs for you, a better stay for guests. Taken alone it's a serene bolt-hole; paired with Villa B, a turnkey managed investment."
     ],
     spec: [
-      { k: 'Bedrooms', v: '2, garden-facing' },
+      { k: 'Bedrooms', v: '2, pool and garden-facing' },
       { k: 'Living', v: '42 m² open-plan' },
       { k: 'Kitchen / dining', v: '31 m², island' },
       { k: 'Pool', v: 'Private, sun deck' },
@@ -88,16 +88,16 @@ export const defaultVillas = [
     plotM2: '1,101',
     builtUpM2: '146',
     bedrooms: '2',
-    priceFrom: '94,000',
+    priceFrom: '90,000',
     tagline: 'The quieter twin, on its own grounds.',
     heroImage: '/assets/img/interior-application.jpg',
     cardImage: '/assets/img/interior-application.jpg',
     intro: [
-      'Villa B mirrors Villa A — single-storey, open-plan living running the full width of the home, then dissolving into a private pool terrace through full-height sliding glass. Two garden-facing bedrooms keep the sleeping quiet and cool.',
+      'Villa B mirrors Villa A — single-storey, open-plan living running the full width of the home, then dissolving into a private pool terrace through full-height sliding glass. Two pool and garden-facing bedrooms keep the sleeping quiet and cool.',
       'Set on its own walled 1,101 m² plot, it lives beautifully as a standalone retreat and performs as a managed short-stay rental. Pair it with Villa A for a turnkey two-villa investment on one calm stretch of coast.'
     ],
     spec: [
-      { k: 'Bedrooms', v: '2, garden-facing' },
+      { k: 'Bedrooms', v: '2, pool and garden-facing' },
       { k: 'Living', v: '42 m² open-plan' },
       { k: 'Kitchen / dining', v: '31 m², island' },
       { k: 'Pool', v: 'Private, sun deck' },

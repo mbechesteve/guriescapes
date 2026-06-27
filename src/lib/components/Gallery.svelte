@@ -84,6 +84,7 @@
     <img class="lb-img" src={item.src} alt={item.alt} />
   </div>
   <div class="lb-bar">
+    {#if item.alt}<span class="lb-caption">{item.alt}</span>{/if}
     <span class="lb-count">{current + 1} / {images.length}</span>
     <button class="lb-back" on:click={close}>&larr; Back to gallery</button>
   </div>
