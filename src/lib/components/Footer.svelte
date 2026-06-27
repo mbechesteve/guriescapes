@@ -1,3 +1,9 @@
+<script>
+  import { page } from '$app/stores';
+  $: c = $page.data?.site?.contact ?? {};
+  $: wa = c.whatsapp ? `https://wa.me/${c.whatsapp}` : '#';
+</script>
+
 <footer class="site-footer">
   <div class="wrap">
     <div class="footer-top">
@@ -18,14 +24,14 @@
       <div>
         <h4>Get in touch</h4>
         <nav class="footer-links" aria-label="Contact">
-          <a href="mailto:hello@guriescapes.com">hello@guriescapes.com</a>
-          <a href="tel:+255000000000">+255 ___ ___ ___</a>
-          <a href="https://wa.me/255000000000">WhatsApp · start chat</a>
+          <a href={`mailto:${c.email || 'hello@guriescapes.com'}`}>{c.email || 'hello@guriescapes.com'}</a>
+          <a href={`tel:${c.phone || ''}`}>{c.phone || '+255 ___ ___ ___'}</a>
+          <a href={wa}>WhatsApp · start chat</a>
           <a href="/#enquire">Enquire now</a>
         </nav>
         <div class="footer-social" style="margin-top:1.4rem">
-          <a href="https://instagram.com/guriescapes" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" /></svg></a>
-          <a href="https://facebook.com/guriescapes" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 8h-2a2 2 0 0 0-2 2v12M8 13h6" /></svg></a>
+          {#if c.instagram}<a href={c.instagram} aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" /></svg></a>{/if}
+          {#if c.facebook}<a href={c.facebook} aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 8h-2a2 2 0 0 0-2 2v12M8 13h6" /></svg></a>{/if}
         </div>
       </div>
     </div>

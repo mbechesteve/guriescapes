@@ -2,6 +2,7 @@
   import { enhance } from '$app/forms';
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
+  import AdminBar from '$lib/components/AdminBar.svelte';
   export let data;
 
   let selected = null; // lead open in the drawer
@@ -76,13 +77,7 @@
 <svelte:head><title>Dashboard · Guri Escapes Admin</title></svelte:head>
 
 <div class="admin">
-  <header class="admin-bar">
-    <a href="/admin" class="brand"><img src="/assets/img/logo-cream.png" alt="Guri Escapes" /> <span>Admin</span></a>
-    <nav>
-      <a href="/" class="ghost">View site ↗</a>
-      <form method="POST" action="/admin/logout"><button type="submit">Log out</button></form>
-    </nav>
-  </header>
+  <AdminBar />
 
   <main class="wrap-admin">
     <img class="dash-frond" src="/assets/img/frond.svg" alt="" aria-hidden="true" />
@@ -283,20 +278,6 @@
 
 <style>
   .admin { min-height: 100dvh; background: var(--cream); }
-  .admin-bar {
-    position: sticky; top: 0; z-index: 10;
-    display: flex; align-items: center; justify-content: space-between;
-    background: var(--sage-deep); color: var(--cream); padding: 12px clamp(16px, 4vw, 40px);
-  }
-  .brand { display: flex; align-items: center; gap: 0.7rem; color: var(--cream); text-decoration: none; }
-  .brand img { height: 38px; }
-  .brand span { font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); }
-  .admin-bar nav { display: flex; align-items: center; gap: 0.8rem; }
-  .admin-bar .ghost { color: rgba(252, 248, 239, 0.85); text-decoration: none; font-size: 0.85rem; }
-  .admin-bar .ghost:hover { color: var(--cream); }
-  .admin-bar button { background: var(--wood); color: #fff; border: 0; border-radius: 50px; padding: 0.55em 1.2em; font-family: var(--f-body); font-size: 0.82rem; cursor: pointer; }
-  .admin-bar button:hover { background: #a97c47; }
-
   .wrap-admin { position: relative; max-width: 1040px; margin: 0 auto; padding: clamp(24px, 4vw, 44px) clamp(16px, 4vw, 40px) 90px; }
   .dash-frond { position: absolute; top: 6px; right: clamp(10px, 4vw, 30px); width: clamp(120px, 16vw, 200px); opacity: 0.07; transform: rotate(-8deg); pointer-events: none; }
   h1 { font-family: var(--f-display); font-weight: 400; font-size: clamp(2.2rem, 4vw, 3rem); color: var(--ink); margin: 0 0 1.6rem; position: relative; }

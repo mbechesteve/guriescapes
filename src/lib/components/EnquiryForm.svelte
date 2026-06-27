@@ -1,8 +1,7 @@
 <script>
   export let source = 'home';
   export let defaultInterest = 'Villa A — Pongwe';
-
-  const interests = [
+  export let interests = [
     'Villa A — Pongwe',
     'Villa B — Pongwe',
     'Both villas (managed pair)',

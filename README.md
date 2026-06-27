@@ -87,6 +87,21 @@ add `0.0.0.0/0`, or Vercel's egress IPs).
 - The dashboard lists every enquiry (newest first) with search and a source
   filter, each card showing name, email, phone, interest, source and message.
 
+## Dynamic content (CMS)
+
+The public site is **database-driven**. On first run, `siteContent` and `villas`
+are seeded from `src/lib/content/defaults.js`, then editable in the admin:
+
+- **/admin/content** — hero copy, starting price, the key-numbers strip, contact
+  details (email/phone/WhatsApp/socials) and the FAQ. Changes are live immediately.
+- **/admin/villas** — add / edit / delete / publish villas. Each villa is a
+  document (name, slug, price, facts, intro, spec, gallery) and renders at
+  `/[slug]`; the homepage grid lists all published villas.
+- **Images** upload to **Vercel Blob** (`BLOB_READ_WRITE_TOKEN`), or paste an
+  image URL if Blob isn't configured.
+
+If MongoDB is unavailable, pages fall back to the defaults so the site still renders.
+
 ## Enquiries
 
 The site forms (home + each villa) POST JSON to `/api/enquire`, which validates

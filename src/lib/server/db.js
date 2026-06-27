@@ -41,6 +41,27 @@ export async function pageviews() {
   return db.collection('pageviews');
 }
 
+export async function siteContent() {
+  const db = await getDb();
+  return db.collection('siteContent');
+}
+
+let villasIndexed = false;
+export async function villas() {
+  const db = await getDb();
+  const col = db.collection('villas');
+  if (!villasIndexed) {
+    villasIndexed = true;
+    try {
+      await col.createIndex({ slug: 1 }, { unique: true });
+      await col.createIndex({ order: 1 });
+    } catch {
+      villasIndexed = false;
+    }
+  }
+  return col;
+}
+
 let sessionsIndexed = false;
 export async function sessions() {
   const db = await getDb();
