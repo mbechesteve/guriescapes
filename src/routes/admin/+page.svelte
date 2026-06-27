@@ -1,16 +1,36 @@
 <script>
   import { enhance } from '$app/forms';
   import { goto } from '$app/navigation';
+  import { onMount } from 'svelte';
   export let data;
+
+  let selected = null; // lead open in the drawer
+  let saving = false;
+  let saved = false;
+
+  function openLead(e) {
+    selected = e;
+    saved = false;
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLead() {
+    selected = null;
+    document.body.style.overflow = '';
+  }
+  onMount(() => {
+    const onKey = (ev) => ev.key === 'Escape' && selected && closeLead();
+    window.addEventListener('keydown', onKey);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+    };
+  });
 
   // Filter state seeded from the server (persists across same-page navigations).
   let q = data.filters.q;
   let statusFilter = data.filters.status;
   let sourceFilter = data.filters.source;
   let searchTimer;
-
-  let savingId = null;
-  let savedId = null;
 
   const statusColors = {
     New: { bg: 'var(--sand)', fg: 'var(--ink)' },
@@ -131,17 +151,20 @@
       {:else}
         <div class="list">
           {#each data.enquiries as e (e.id)}
-            <article class="card">
+            <div
+              class="card"
+              role="button"
+              tabindex="0"
+              on:click={() => openLead(e)}
+              on:keydown={(ev) => (ev.key === 'Enter' || ev.key === ' ') && (ev.preventDefault(), openLead(e))}
+            >
               <div class="card-top">
                 <div>
                   <h3 class="name">
                     {e.firstname} {e.lastname}
                     <span class="badge" style:background={statusColors[e.status].bg} style:color={statusColors[e.status].fg}>{e.status}</span>
                   </h3>
-                  <div class="meta">
-                    <a href={`mailto:${e.email}`}>{e.email}</a>
-                    {#if e.phone}<span>· {e.phone}</span>{/if}
-                  </div>
+                  <div class="meta">{e.email}{#if e.phone} · {e.phone}{/if}</div>
                 </div>
                 <time>{fmt(e.createdAt)}</time>
               </div>
@@ -152,46 +175,9 @@
                 {#if e.nextStep}<span class="tag next">Next: {e.nextStep}{e.nextStepDate ? ` (${e.nextStepDate})` : ''}</span>{/if}
               </div>
 
-              {#if e.message}<p class="msg">{e.message}</p>{/if}
-
-              <form
-                class="manage"
-                method="POST"
-                action="?/update"
-                use:enhance={() => {
-                  savingId = e.id;
-                  return async ({ result, update }) => {
-                    await update({ reset: false });
-                    savingId = null;
-                    if (result.type === 'success') { savedId = e.id; setTimeout(() => (savedId = null), 2000); }
-                  };
-                }}
-              >
-                <input type="hidden" name="id" value={e.id} />
-                <div class="m-grid">
-                  <label>Status
-                    <select name="status" value={e.status}>
-                      {#each data.statuses as s}<option value={s}>{s}</option>{/each}
-                    </select>
-                  </label>
-                  <label>Next step
-                    <input name="nextStep" value={e.nextStep} placeholder="e.g. Send brochure, call back" />
-                  </label>
-                  <label>Follow-up date
-                    <input type="date" name="nextStepDate" value={e.nextStepDate} />
-                  </label>
-                </div>
-                <label class="full">Notes
-                  <textarea name="notes" rows="2" placeholder="Internal notes about this lead…">{e.notes}</textarea>
-                </label>
-                <div class="m-actions">
-                  <button type="submit" disabled={savingId === e.id}>
-                    {savingId === e.id ? 'Saving…' : savedId === e.id ? 'Saved ✓' : 'Save'}
-                  </button>
-                  {#if e.updatedAt}<span class="upd">Updated {fmt(e.updatedAt)}</span>{/if}
-                </div>
-              </form>
-            </article>
+              {#if e.message}<p class="msg clamp">{e.message}</p>{/if}
+              <span class="card-cta">Manage →</span>
+            </div>
           {/each}
         </div>
 
@@ -205,6 +191,88 @@
       {/if}
     {/if}
   </main>
+
+  {#if selected}
+    <div class="drawer-scrim" on:click={closeLead} role="presentation"></div>
+    <aside class="drawer" role="dialog" aria-modal="true" aria-label="Manage lead">
+      {#key selected.id}
+        <div class="drawer-head">
+          <div>
+            <h2 class="d-name">{selected.firstname} {selected.lastname}</h2>
+            <span class="badge" style:background={statusColors[selected.status].bg} style:color={statusColors[selected.status].fg}>{selected.status}</span>
+          </div>
+          <button class="d-close" on:click={closeLead} aria-label="Close">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18" /></svg>
+          </button>
+        </div>
+
+        <div class="drawer-body">
+          <div class="d-contact">
+            <a href={`mailto:${selected.email}`}>{selected.email}</a>
+            {#if selected.phone}<a href={`tel:${selected.phone}`}>{selected.phone}</a>{/if}
+            {#if selected.phone}<a href={`https://wa.me/${selected.phone.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer">WhatsApp ↗</a>{/if}
+          </div>
+
+          <div class="d-tags">
+            {#if selected.interest}<span class="tag interest">{selected.interest}</span>{/if}
+            <span class="tag source">{sourceLabel(selected.source)}</span>
+          </div>
+
+          {#if selected.message}
+            <div class="d-block"><span class="d-label">Message</span><p>{selected.message}</p></div>
+          {/if}
+          <div class="d-block"><span class="d-label">Received</span><p>{fmt(selected.createdAt)}</p></div>
+
+          <form
+            class="d-form"
+            method="POST"
+            action="?/update"
+            use:enhance={({ formData }) => {
+              saving = true;
+              return async ({ result, update }) => {
+                await update({ reset: false });
+                saving = false;
+                if (result.type === 'success') {
+                  selected = {
+                    ...selected,
+                    status: formData.get('status'),
+                    nextStep: formData.get('nextStep'),
+                    nextStepDate: formData.get('nextStepDate'),
+                    notes: formData.get('notes'),
+                    updatedAt: new Date().toISOString()
+                  };
+                  saved = true;
+                  setTimeout(() => (saved = false), 2000);
+                }
+              };
+            }}
+          >
+            <input type="hidden" name="id" value={selected.id} />
+            <label class="d-field">Status
+              <select name="status" value={selected.status}>
+                {#each data.statuses as s}<option value={s}>{s}</option>{/each}
+              </select>
+            </label>
+            <div class="d-row">
+              <label class="d-field">Next step
+                <input name="nextStep" value={selected.nextStep} placeholder="e.g. Send brochure, call back" />
+              </label>
+              <label class="d-field">Follow-up date
+                <input type="date" name="nextStepDate" value={selected.nextStepDate} />
+              </label>
+            </div>
+            <label class="d-field">Notes
+              <textarea name="notes" rows="5" placeholder="Internal notes about this lead…">{selected.notes}</textarea>
+            </label>
+            <div class="d-actions">
+              <button type="submit" class="d-save" disabled={saving}>{saving ? 'Saving…' : saved ? 'Saved ✓' : 'Save changes'}</button>
+              {#if selected.updatedAt}<span class="upd">Updated {fmt(selected.updatedAt)}</span>{/if}
+            </div>
+          </form>
+        </div>
+      {/key}
+    </aside>
+  {/if}
 </div>
 
 <style>
@@ -278,8 +346,17 @@
   .pager-info { font-size: 0.85rem; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
   .notice.err { border-color: #d8b4a6; color: #a3432b; background: #fbf1ec; }
 
-  .list { display: grid; gap: 1rem; }
-  .card { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: clamp(16px, 2.4vw, 24px); }
+  .list { display: grid; gap: 0.8rem; }
+  .card {
+    position: relative; background: #fff; border: 1px solid var(--line); border-radius: 14px;
+    padding: clamp(15px, 2.2vw, 22px); cursor: pointer; text-align: left; width: 100%;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  }
+  .card:hover { border-color: var(--wood); box-shadow: 0 10px 26px -18px rgba(54, 58, 23, 0.5); }
+  .card:focus-visible { outline: 2px solid var(--wood); outline-offset: 2px; }
+  .card .card-cta { position: absolute; top: clamp(15px, 2.2vw, 22px); right: clamp(15px, 2.2vw, 22px); font-size: 0.8rem; color: var(--wood); opacity: 0; transition: opacity 0.2s ease; }
+  .card:hover .card-cta { opacity: 1; }
+  .msg.clamp { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
   .card-top { display: flex; justify-content: space-between; gap: 1rem; align-items: flex-start; }
   .name { font-family: var(--f-display); font-weight: 500; font-size: 1.35rem; margin: 0; color: var(--ink); display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap; }
   .badge { font-family: var(--f-body); font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.32em 0.7em; border-radius: 50px; }
@@ -294,30 +371,55 @@
   .tag.next { background: #eef0e3; color: var(--sage-deep); }
   .msg { margin: 1rem 0 0; color: var(--ink); line-height: 1.6; font-size: 0.96rem; white-space: pre-wrap; }
 
-  .manage { margin-top: 1.2rem; padding-top: 1.2rem; border-top: 1px dashed var(--line); }
-  .m-grid { display: grid; grid-template-columns: 1fr 1.3fr 1fr; gap: 0.8rem; }
-  .manage label { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-soft); }
-  .manage label.full { margin-top: 0.8rem; }
-  .manage select, .manage input, .manage textarea {
-    font-family: var(--f-body); font-size: 0.92rem; text-transform: none; letter-spacing: normal;
-    color: var(--ink); background: var(--cream); border: 1px solid var(--line); border-radius: 8px; padding: 0.6em 0.7em;
+  /* Drawer */
+  .drawer-scrim { position: fixed; inset: 0; background: rgba(20, 22, 8, 0.45); backdrop-filter: blur(2px); z-index: 40; animation: fade 0.25s ease; }
+  @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+  .drawer {
+    position: fixed; top: 0; right: 0; bottom: 0; z-index: 41;
+    width: min(460px, 100vw); background: var(--cream); box-shadow: -24px 0 60px -30px rgba(0, 0, 0, 0.5);
+    display: flex; flex-direction: column; overflow-y: auto; animation: slide 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
   }
-  .manage select:focus, .manage input:focus, .manage textarea:focus { outline: none; border-color: var(--wood); }
-  .manage textarea { resize: vertical; }
-  .m-actions { display: flex; align-items: center; gap: 1rem; margin-top: 0.9rem; }
-  .m-actions button { background: var(--sage); color: var(--cream); border: 0; border-radius: 50px; padding: 0.6em 1.6em; font-family: var(--f-body); font-size: 0.85rem; cursor: pointer; transition: background 0.3s; }
-  .m-actions button:hover:not(:disabled) { background: var(--sage-deep); }
-  .m-actions button:disabled { opacity: 0.7; cursor: default; }
+  @keyframes slide { from { transform: translateX(100%); } to { transform: none; } }
+  .drawer-head {
+    position: sticky; top: 0; z-index: 1; background: var(--sage-deep); color: var(--cream);
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem;
+    padding: clamp(18px, 3vw, 26px) clamp(18px, 3vw, 28px);
+  }
+  .d-name { font-family: var(--f-display); font-weight: 500; font-size: 1.6rem; margin: 0 0 0.5rem; color: var(--cream); }
+  .d-close { background: rgba(252, 248, 239, 0.1); border: 1px solid rgba(252, 248, 239, 0.25); color: var(--cream); width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; cursor: pointer; flex: none; transition: 0.2s ease; }
+  .d-close:hover { background: var(--wood); border-color: var(--wood); }
+  .d-close svg { width: 18px; height: 18px; }
+  .drawer-body { padding: clamp(18px, 3vw, 28px); }
+  .d-contact { display: flex; flex-wrap: wrap; gap: 0.4rem 1.1rem; font-size: 0.92rem; margin-bottom: 1rem; }
+  .d-contact a { color: var(--wood); text-decoration: none; }
+  .d-contact a:hover { text-decoration: underline; }
+  .d-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.4rem; }
+  .d-block { margin-bottom: 1.2rem; }
+  .d-label { display: block; font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 0.35rem; }
+  .d-block p { margin: 0; color: var(--ink); line-height: 1.6; font-size: 0.95rem; white-space: pre-wrap; }
+  .d-form { border-top: 1px solid var(--line); padding-top: 1.4rem; margin-top: 0.4rem; }
+  .d-field { display: flex; flex-direction: column; gap: 0.35rem; font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 1rem; }
+  .d-row { display: grid; grid-template-columns: 1.4fr 1fr; gap: 0.8rem; }
+  .d-form select, .d-form input, .d-form textarea {
+    font-family: var(--f-body); font-size: 0.95rem; text-transform: none; letter-spacing: normal;
+    color: var(--ink); background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 0.7em 0.8em;
+  }
+  .d-form select:focus, .d-form input:focus, .d-form textarea:focus { outline: none; border-color: var(--wood); }
+  .d-form textarea { resize: vertical; }
+  .d-actions { display: flex; align-items: center; gap: 1rem; margin-top: 0.4rem; }
+  .d-save { background: var(--wood); color: #fff; border: 0; border-radius: 50px; padding: 0.8em 1.8em; font-family: var(--f-body); font-weight: 500; font-size: 0.9rem; cursor: pointer; transition: background 0.3s; }
+  .d-save:hover:not(:disabled) { background: #a97c47; }
+  .d-save:disabled { opacity: 0.7; cursor: default; }
   .upd { font-size: 0.78rem; color: var(--ink-soft); }
 
   @media (max-width: 760px) {
     .stat-row { grid-template-columns: repeat(3, 1fr); }
     .panels { grid-template-columns: 1fr; }
-    .m-grid { grid-template-columns: 1fr; }
     .bar-row { grid-template-columns: 110px 1fr auto; }
   }
   @media (max-width: 480px) {
     .stat-row { grid-template-columns: repeat(2, 1fr); }
     .filters input { min-width: 0; flex: 1; }
+    .d-row { grid-template-columns: 1fr; }
   }
 </style>
