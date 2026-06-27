@@ -22,13 +22,23 @@
   var links = document.getElementById('navLinks');
   if (toggle && links) {
     var menuOpen = false;
-    var scrim = document.createElement('div');
-    scrim.className = 'nav-scrim';
-    body.appendChild(scrim);
+    var navAnchors = links.querySelectorAll('a'); // capture before injecting the footer
+
+    // email + socials pinned to the bottom of the full-screen menu
+    var foot = document.createElement('div');
+    foot.className = 'menu-foot';
+    foot.innerHTML =
+      '<div class="rule"></div>' +
+      '<a class="mail" href="mailto:hello@guriescapes.com">hello@guriescapes.com</a>' +
+      '<div class="socials">' +
+        '<a href="https://instagram.com/guriescapes" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>' +
+        '<a href="https://facebook.com/guriescapes" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 8h-2a2 2 0 0 0-2 2v12M8 13h6"/></svg></a>' +
+      '</div>';
+    links.appendChild(foot);
+
     function setMenu(open) {
       menuOpen = open;
       links.classList.toggle('open', open);
-      scrim.classList.toggle('open', open);
       toggle.classList.toggle('active', open);
       body.classList.toggle('nav-open', open);
       toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
@@ -36,8 +46,7 @@
       if (open) lock(); else unlock();
     }
     toggle.addEventListener('click', function () { setMenu(!menuOpen); });
-    scrim.addEventListener('click', function () { setMenu(false); });
-    links.querySelectorAll('a').forEach(function (a) {
+    navAnchors.forEach(function (a) {
       a.addEventListener('click', function () { if (menuOpen) setMenu(false); });
     });
     document.addEventListener('keydown', function (e) {
