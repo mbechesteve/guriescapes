@@ -58,15 +58,24 @@ static/assets/img/              Logos, frond, photography
    ```
    Public site: http://localhost:5173 · Admin: http://localhost:5173/admin
 
-## Production
+## Deploying to Vercel
 
-```bash
-npm run build
-ORIGIN="https://your-domain.com" node build      # plus the env vars above
-```
+Uses `@sveltejs/adapter-vercel` (Node.js serverless functions). Push to the
+connected Git repo and Vercel builds automatically — no Output Directory setting
+needed (leave it on the SvelteKit framework default).
 
-`ORIGIN` must be set in production so SvelteKit accepts the login form POST
-(CSRF origin check). In `npm run dev` this is automatic.
+**Required:** set these in Vercel → Project → Settings → Environment Variables
+(Production), or the app will fail to start / can't save enquiries:
+
+- `MONGODB_URI` — a **MongoDB Atlas** URI (Vercel can't reach a local mongod)
+- `MONGODB_DB` — e.g. `guriescapes`
+- `ADMIN_USERNAME`, `ADMIN_PASSWORD`
+- `SESSION_SECRET`
+
+Also in MongoDB Atlas, allow network access from Vercel (Atlas → Network Access →
+add `0.0.0.0/0`, or Vercel's egress IPs).
+
+`ORIGIN` is handled automatically on Vercel.
 
 ## Admin
 
