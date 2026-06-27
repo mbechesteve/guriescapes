@@ -1,0 +1,13 @@
+# Local tooling / editor config
+.claude/
+.vscode/
+.idea/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Dependencies / build (none currently, but just in case)
+node_modules/
+dist/
+*.log
