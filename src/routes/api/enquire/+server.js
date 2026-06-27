@@ -31,7 +31,11 @@ export async function POST({ request }) {
     message: str(body.message, 4000),
     source: str(body.source, 40),
     createdAt: new Date(),
-    read: false
+    status: 'New',
+    notes: '',
+    nextStep: '',
+    nextStepDate: null,
+    updatedAt: null
   };
 
   try {

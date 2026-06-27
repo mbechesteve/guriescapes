@@ -24,6 +24,11 @@ export async function enquiries() {
   return db.collection('enquiries');
 }
 
+export async function pageviews() {
+  const db = await getDb();
+  return db.collection('pageviews');
+}
+
 let sessionsIndexed = false;
 export async function sessions() {
   const db = await getDb();

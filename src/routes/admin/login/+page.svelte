@@ -9,8 +9,9 @@
 <div class="login">
   <div class="login-card">
     <img src="/assets/img/logo-dark.png" alt="Guri Escapes" class="login-logo" />
-    <h1>Admin sign in</h1>
-    <p class="sub">Enter the admin password to view enquiries.</p>
+    <p class="eyebrow">Guri Escapes · Admin</p>
+    <h1>Sign in</h1>
+    <p class="sub">Enter your username and password to view and manage enquiries.</p>
 
     <form
       method="POST"
@@ -52,13 +53,16 @@
     text-align: center;
   }
   .login-logo { height: 70px; width: auto; margin: 0 auto 1.4rem; display: block; }
-  h1 { font-family: var(--f-display); font-weight: 400; font-size: 1.9rem; color: var(--ink); margin: 0; }
-  .sub { color: var(--ink-soft); font-size: 0.95rem; margin: 0.5rem 0 1.8rem; }
-  form { text-align: left; }
-  label { display: block; font-size: 0.74rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-soft); }
-  label.mt { margin-top: 1.1rem; }
-  input {
+  .eyebrow { font-size: 0.68rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--wood); margin: 0 0 0.6rem; }
+  h1 { font-family: var(--f-display); font-weight: 400; font-size: 2.2rem; color: var(--ink); margin: 0; }
+  .sub { color: var(--ink-soft); font-size: 0.92rem; line-height: 1.5; margin: 0.5rem auto 1.8rem; max-width: 30ch; }
+  .login-card form { text-align: left; }
+  .login-card label { display: block; font-size: 0.74rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-soft); }
+  .login-card label.mt { margin-top: 1.1rem; }
+  .login-card input {
+    display: block;
     width: 100%;
+    box-sizing: border-box;
     margin: 0.5rem 0 0;
     padding: 0.85em 1em;
     border: 1px solid var(--line);
@@ -67,10 +71,12 @@
     font-size: 1rem;
     background: #fff;
   }
-  input:focus { outline: none; border-color: var(--wood); }
+  .login-card input:focus { outline: none; border-color: var(--wood); }
   .err { color: #a3432b; font-size: 0.88rem; margin: 0.8rem 0 0; }
-  button {
+  .login-card button {
+    display: block;
     width: 100%;
+    box-sizing: border-box;
     margin-top: 1.4rem;
     background: var(--wood);
     color: #fff;
@@ -84,8 +90,8 @@
     cursor: pointer;
     transition: background 0.3s;
   }
-  button:hover:not(:disabled) { background: #a97c47; }
-  button:disabled { opacity: 0.7; cursor: default; }
+  .login-card button:hover:not(:disabled) { background: #a97c47; }
+  .login-card button:disabled { opacity: 0.7; cursor: default; }
   .back { display: inline-block; margin-top: 1.6rem; color: var(--ink-soft); font-size: 0.85rem; text-decoration: none; }
   .back:hover { color: var(--wood); }
 </style>

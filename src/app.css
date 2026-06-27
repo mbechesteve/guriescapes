@@ -315,7 +315,7 @@ body.nav-open .site-header.scrolled{
 .enquire .contact-line{margin-top:2rem;display:flex;flex-direction:column;gap:.9rem;font-size:.98rem}
 .enquire .contact-line a{display:flex;gap:.7rem;align-items:center;color:rgba(252,248,239,.9)}
 .enquire .contact-line .ci{width:20px;height:20px;color:var(--gold);flex:none}
-form{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem}
+.enquire form{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem}
 .field{display:flex;flex-direction:column;gap:.5rem}
 .field.full{grid-column:1/-1}
 .field label{font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
