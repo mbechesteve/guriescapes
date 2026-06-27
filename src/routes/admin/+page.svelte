@@ -66,6 +66,10 @@
       day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
     });
   }
+  function fmtDate(iso) {
+    if (!iso) return '—';
+    return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+  }
   const sourceLabel = (s) => (s ? s.replace('-', ' ') : 'site');
 </script>
 
@@ -149,36 +153,38 @@
       {:else if data.total === 0}
         <div class="notice">No leads match your filters. <button class="link" on:click={() => { q=''; statusFilter='all'; sourceFilter='all'; applyFilters(); }}>Clear filters</button></div>
       {:else}
-        <div class="list">
-          {#each data.enquiries as e (e.id)}
-            <div
-              class="card"
-              role="button"
-              tabindex="0"
-              on:click={() => openLead(e)}
-              on:keydown={(ev) => (ev.key === 'Enter' || ev.key === ' ') && (ev.preventDefault(), openLead(e))}
-            >
-              <div class="card-top">
-                <div>
-                  <h3 class="name">
-                    {e.firstname} {e.lastname}
-                    <span class="badge" style:background={statusColors[e.status].bg} style:color={statusColors[e.status].fg}>{e.status}</span>
-                  </h3>
-                  <div class="meta">{e.email}{#if e.phone} · {e.phone}{/if}</div>
-                </div>
-                <time>{fmt(e.createdAt)}</time>
-              </div>
-
-              <div class="tags">
-                {#if e.interest}<span class="tag interest">{e.interest}</span>{/if}
-                <span class="tag source">{sourceLabel(e.source)}</span>
-                {#if e.nextStep}<span class="tag next">Next: {e.nextStep}{e.nextStepDate ? ` (${e.nextStepDate})` : ''}</span>{/if}
-              </div>
-
-              {#if e.message}<p class="msg clamp">{e.message}</p>{/if}
-              <span class="card-cta">Manage →</span>
-            </div>
-          {/each}
+        <div class="table-wrap">
+          <table class="leads-table">
+            <thead>
+              <tr>
+                <th>Lead</th>
+                <th class="col-interest">Interest</th>
+                <th class="col-source">Source</th>
+                <th>Status</th>
+                <th class="col-next">Next step</th>
+                <th class="col-date">Received</th>
+              </tr>
+            </thead>
+            <tbody>
+              {#each data.enquiries as e (e.id)}
+                <tr
+                  tabindex="0"
+                  on:click={() => openLead(e)}
+                  on:keydown={(ev) => (ev.key === 'Enter' || ev.key === ' ') && (ev.preventDefault(), openLead(e))}
+                >
+                  <td class="td-lead">
+                    <span class="td-name">{e.firstname} {e.lastname}</span>
+                    <span class="td-email">{e.email}{#if e.phone} · {e.phone}{/if}</span>
+                  </td>
+                  <td class="col-interest td-soft">{e.interest || '—'}</td>
+                  <td class="col-source"><span class="tag source">{sourceLabel(e.source)}</span></td>
+                  <td><span class="badge" style:background={statusColors[e.status].bg} style:color={statusColors[e.status].fg}>{e.status}</span></td>
+                  <td class="col-next td-soft">{e.nextStep ? e.nextStep + (e.nextStepDate ? ` · ${e.nextStepDate}` : '') : '—'}</td>
+                  <td class="col-date td-soft">{fmtDate(e.createdAt)}</td>
+                </tr>
+              {/each}
+            </tbody>
+          </table>
         </div>
 
         {#if data.totalPages > 1}
@@ -346,30 +352,30 @@
   .pager-info { font-size: 0.85rem; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
   .notice.err { border-color: #d8b4a6; color: #a3432b; background: #fbf1ec; }
 
-  .list { display: grid; gap: 0.8rem; }
-  .card {
-    position: relative; background: #fff; border: 1px solid var(--line); border-radius: 14px;
-    padding: clamp(15px, 2.2vw, 22px); cursor: pointer; text-align: left; width: 100%;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  /* Leads table */
+  .table-wrap { background: #fff; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+  .leads-table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+  .leads-table thead th {
+    text-align: left; font-family: var(--f-body); font-weight: 600; font-size: 0.68rem;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft);
+    padding: 0.9rem 1rem; background: var(--sand); border-bottom: 1px solid var(--line); white-space: nowrap;
   }
-  .card:hover { border-color: var(--wood); box-shadow: 0 10px 26px -18px rgba(54, 58, 23, 0.5); }
-  .card:focus-visible { outline: 2px solid var(--wood); outline-offset: 2px; }
-  .card .card-cta { position: absolute; top: clamp(15px, 2.2vw, 22px); right: clamp(15px, 2.2vw, 22px); font-size: 0.8rem; color: var(--wood); opacity: 0; transition: opacity 0.2s ease; }
-  .card:hover .card-cta { opacity: 1; }
-  .msg.clamp { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-  .card-top { display: flex; justify-content: space-between; gap: 1rem; align-items: flex-start; }
-  .name { font-family: var(--f-display); font-weight: 500; font-size: 1.35rem; margin: 0; color: var(--ink); display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap; }
-  .badge { font-family: var(--f-body); font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.32em 0.7em; border-radius: 50px; }
-  .meta { font-size: 0.9rem; color: var(--ink-soft); margin-top: 0.2rem; }
-  .meta a { color: var(--wood); text-decoration: none; }
-  .meta a:hover { text-decoration: underline; }
-  time { font-size: 0.8rem; color: var(--ink-soft); white-space: nowrap; }
-  .tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.9rem; }
-  .tag { font-size: 0.72rem; padding: 0.35em 0.8em; border-radius: 50px; }
+  .leads-table tbody tr { cursor: pointer; transition: background 0.15s ease; border-bottom: 1px solid var(--line); }
+  .leads-table tbody tr:last-child { border-bottom: 0; }
+  .leads-table tbody tr:hover { background: #fffdf6; }
+  .leads-table tbody tr:focus-visible { outline: 2px solid var(--wood); outline-offset: -2px; }
+  .leads-table td { padding: 0.85rem 1rem; vertical-align: middle; color: var(--ink); }
+  .td-lead { display: flex; flex-direction: column; gap: 0.15rem; }
+  .td-name { font-family: var(--f-display); font-size: 1.1rem; font-weight: 500; color: var(--ink); }
+  .td-email { font-size: 0.82rem; color: var(--ink-soft); }
+  .td-soft { color: var(--ink-soft); }
+  .col-date { white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .col-next, .col-interest { max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .badge { display: inline-block; font-family: var(--f-body); font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.32em 0.7em; border-radius: 50px; white-space: nowrap; }
+  .tag { font-size: 0.72rem; padding: 0.35em 0.8em; border-radius: 50px; white-space: nowrap; }
   .tag.interest { background: var(--sand); color: var(--ink); }
   .tag.source { background: var(--sage); color: var(--cream); text-transform: capitalize; }
-  .tag.next { background: #eef0e3; color: var(--sage-deep); }
-  .msg { margin: 1rem 0 0; color: var(--ink); line-height: 1.6; font-size: 0.96rem; white-space: pre-wrap; }
 
   /* Drawer */
   .drawer-scrim { position: fixed; inset: 0; background: rgba(20, 22, 8, 0.45); backdrop-filter: blur(2px); z-index: 40; animation: fade 0.25s ease; }
@@ -412,10 +418,17 @@
   .d-save:disabled { opacity: 0.7; cursor: default; }
   .upd { font-size: 0.78rem; color: var(--ink-soft); }
 
+  @media (max-width: 820px) {
+    .col-interest, .col-next { display: none; }
+  }
   @media (max-width: 760px) {
     .stat-row { grid-template-columns: repeat(3, 1fr); }
     .panels { grid-template-columns: 1fr; }
     .bar-row { grid-template-columns: 110px 1fr auto; }
+  }
+  @media (max-width: 540px) {
+    .col-source { display: none; }
+    .leads-table td, .leads-table thead th { padding: 0.75rem 0.7rem; }
   }
   @media (max-width: 480px) {
     .stat-row { grid-template-columns: repeat(2, 1fr); }
