@@ -1,9 +1,10 @@
 import { json, error } from '@sveltejs/kit';
 import { enquiries } from '$lib/server/db';
+import { sendEmail, notifyAddress, newEnquiryEmail } from '$lib/server/email';
 
 const str = (v, max) => String(v ?? '').trim().slice(0, max);
 
-export async function POST({ request }) {
+export async function POST({ request, url }) {
   let body;
   try {
     body = await request.json();
@@ -44,6 +45,21 @@ export async function POST({ request }) {
   } catch (e) {
     console.error('Failed to save enquiry:', e);
     throw error(500, 'Could not save your enquiry. Please try again.');
+  }
+
+  // Notify the team (best-effort — never block or fail the response on email).
+  try {
+    const to = await notifyAddress();
+    if (to) {
+      await sendEmail({
+        to,
+        subject: `New enquiry — ${doc.firstname} ${doc.lastname}`,
+        html: newEnquiryEmail(doc, `${url.origin}/admin`),
+        replyTo: doc.email
+      });
+    }
+  } catch (e) {
+    console.error('Enquiry notification failed:', e);
   }
 
   return json({ ok: true });

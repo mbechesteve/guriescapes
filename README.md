@@ -103,6 +103,17 @@ are seeded from `src/lib/content/defaults.js`, then editable in the admin:
 
 If MongoDB is unavailable, pages fall back to the defaults so the site still renders.
 
+## Email notifications
+
+Uses **Resend**. Set `RESEND_API_KEY`, `MAIL_FROM` (a verified sender), and
+optionally `MAIL_TO` (defaults to the site contact email). The team is notified:
+
+- when a **new enquiry** is submitted (reply-to is the lead's email), and
+- when a **lead is updated** in the admin (status / next step changed).
+
+Email is best-effort — if it's not configured or fails, the site and admin keep
+working. Verify your domain in Resend so mail sends from `hello@guriescapes.com`.
+
 ## Enquiries
 
 The site forms (home + each villa) POST JSON to `/api/enquire`, which validates

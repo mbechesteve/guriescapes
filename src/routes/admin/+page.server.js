@@ -1,6 +1,7 @@
 import { fail } from '@sveltejs/kit';
 import { ObjectId } from 'mongodb';
 import { enquiries, pageviews } from '$lib/server/db';
+import { sendEmail, notifyAddress, leadUpdateEmail } from '$lib/server/email';
 
 const STATUSES = ['New', 'Contacted', 'Viewing', 'Negotiating', 'Won', 'Lost'];
 const PAGE_SIZE = 20;
@@ -117,7 +118,7 @@ export async function load({ url }) {
 }
 
 export const actions = {
-  update: async ({ request }) => {
+  update: async ({ request, url }) => {
     const fd = await request.formData();
     const id = String(fd.get('id') || '');
     if (!ObjectId.isValid(id)) return fail(400, { error: 'Invalid lead id' });
@@ -128,16 +129,36 @@ export const actions = {
     const rawDate = String(fd.get('nextStepDate') || '').trim();
     const nextStepDate = rawDate ? new Date(rawDate) : null;
 
+    let lead;
     try {
       const col = await enquiries();
       await col.updateOne(
         { _id: new ObjectId(id) },
         { $set: { status, notes, nextStep, nextStepDate, updatedAt: new Date() } }
       );
+      lead = await col.findOne({ _id: new ObjectId(id) });
     } catch (e) {
       console.error('Failed to update lead:', e);
       return fail(500, { error: 'Could not save changes' });
     }
+
+    // Notify the team of the change (best-effort).
+    try {
+      const to = await notifyAddress();
+      if (to && lead) {
+        await sendEmail({
+          to,
+          subject: `Lead updated — ${lead.firstname} ${lead.lastname} → ${status}`,
+          html: leadUpdateEmail(
+            { ...lead, nextStepDate: nextStepDate ? nextStepDate.toISOString().slice(0, 10) : '' },
+            `${url.origin}/admin`
+          )
+        });
+      }
+    } catch (e) {
+      console.error('Lead-update notification failed:', e);
+    }
+
     return { success: true, id };
   }
 };
