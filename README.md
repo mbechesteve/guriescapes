@@ -97,8 +97,9 @@ are seeded from `src/lib/content/defaults.js`, then editable in the admin:
 - **/admin/villas** — add / edit / delete / publish villas. Each villa is a
   document (name, slug, price, facts, intro, spec, gallery) and renders at
   `/[slug]`; the homepage grid lists all published villas.
-- **Images** upload to **Vercel Blob** (`BLOB_READ_WRITE_TOKEN`), or paste an
-  image URL if Blob isn't configured.
+- **Images** uploaded in the admin are stored in **MongoDB** by default and
+  served from `/api/img/[id]` (max 10MB each) — no extra setup. You can paste an
+  image URL instead, or set `BLOB_READ_WRITE_TOKEN` to use Vercel Blob's CDN.
 
 If MongoDB is unavailable, pages fall back to the defaults so the site still renders.
 
