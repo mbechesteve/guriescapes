@@ -336,7 +336,9 @@
       <div class="contact-line">
         <a href={`mailto:${contact.email}`}><svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="M3 7l9 6 9-6" /></svg> {contact.email}</a>
         <a href={`tel:${contact.phone}`}><svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 4h4l2 5-3 2a14 14 0 0 0 6 6l2-3 5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 6a2 2 0 0 1 2-2z" /></svg> {contact.phone}</a>
-        <a href={waHref}><svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21l1.6-5A8.5 8.5 0 1 1 8 19.4z" /><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5M9 9.5c0-.6.4-1 1-1s1 1 1.4 1.8M14.5 15c.6 0 1-.4 1-1s-1-1-1.8-1.4" /></svg> WhatsApp · start chat</a>
+        {#if contact.phoneTz}<a href={`tel:${contact.phoneTz.replace(/\s/g,'')}`}><svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 4h4l2 5-3 2a14 14 0 0 0 6 6l2-3 5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 6a2 2 0 0 1 2-2z" /></svg> {contact.phoneTz} · Call only</a>{/if}
+        {#if contact.calendly}<a href={contact.calendly} target="_blank" rel="noopener"><svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M3 9h18M8 3v4M16 3v4" /></svg> Book a call ↗</a>{/if}
+        <a href={waHref}><svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21l1.6-5A8.5 8.5 0 1 1 8 19.4z" /><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5M9 9.5c0-.6.4-1 1-1s1 1 1.4 1.8M14.5 15c.6 0 1-.4 1-1s-1-1-1.8-1.4" /></svg> WhatsApp{contact.whatsappNote ? ` · ${contact.whatsappNote}` : ' · start chat'}</a>
       </div>
     </div>
     <div class="reveal" data-d="1">
