@@ -136,10 +136,10 @@
     <div class="invest-stats">
       <div class="invest-stat reveal"><div class="num">15–18%</div><div class="lab">ROI potential</div><div class="cap">Target gross yields for Zanzibar villas — best in the region.</div></div>
       <div class="invest-stat reveal" data-d="1"><div class="num">65%+</div><div class="lab">Occupancy</div><div class="cap">Island-wide and rising with record tourism.</div></div>
-      <div class="invest-stat reveal" data-d="2"><div class="num">30–40%</div><div class="lab">Capital growth</div><div class="cap">Projected land appreciation to 2026.</div></div>
+      <div class="invest-stat reveal" data-d="2"><div class="num">30–40%</div><div class="lab">Capital growth</div><div class="cap">Projected land appreciation to 2027.</div></div>
       <div class="invest-stat reveal" data-d="3"><div class="num">100%</div><div class="lab">International buyers</div><div class="cap">Secure leasehold structure built for foreign owners.</div></div>
     </div>
-    <p class="invest-note reveal">Tourist arrivals are on track to surpass 1 million by 2026 — and villas earn in USD, a natural hedge against currency movement.</p>
+    <p class="invest-note reveal">Tourist arrivals have passed 1 million and continue to climb through 2027 — and villas earn in USD, a natural hedge against currency movement.</p>
   </div>
 </section>
 
