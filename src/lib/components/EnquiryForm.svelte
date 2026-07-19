@@ -26,9 +26,15 @@
   let dialCode = '+255';
   let phoneNumber = '';
   let timeframe = '';
+  let brochurePrimed = false;
 
-  // Pre-check brochure option when arriving via a Download-brochure CTA.
-  $: if ($brochureIntent) selectedHelp = new Set([...selectedHelp, 'Send me the brochure and price list']);
+  // Pre-check brochure option once when arriving via a Download-brochure CTA.
+  // Edge-triggered (guarded by brochurePrimed) so the user can uncheck it
+  // afterwards without it being silently re-added.
+  $: if ($brochureIntent && !brochurePrimed) {
+    selectedHelp = new Set([...selectedHelp, 'Send me the brochure and price list']);
+    brochurePrimed = true;
+  }
 
   function toggleHelp(opt) {
     const next = new Set(selectedHelp);
@@ -54,7 +60,7 @@
       if (!res.ok) throw new Error('failed');
       status = 'sent';
       form.reset(); selectedHelp = new Set(); phoneNumber = ''; timeframe = ''; dialCode = '+255';
-      brochureIntent.set(false);
+      brochureIntent.set(false); brochurePrimed = false;
       setTimeout(() => (status = 'idle'), 3500);
     } catch {
       status = 'error';
