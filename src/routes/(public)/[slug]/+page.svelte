@@ -81,7 +81,7 @@
       </div>
     </div>
     <div class="reveal" data-d="1">
-      <EnquiryForm source={v.slug} defaultInterest={v.name} interests={[v.name, 'Both villas (managed pair)', 'The full brochure & pricing']} />
+      <EnquiryForm source={v.slug} preselectHelp={['Help me compare Villa A and Villa B']} />
     </div>
   </div>
 </section>

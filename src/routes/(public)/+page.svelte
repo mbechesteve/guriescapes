@@ -1,5 +1,6 @@
 <script>
   import EnquiryForm from '$lib/components/EnquiryForm.svelte';
+  import { brochureIntent } from '$lib/stores/enquiry';
   export let data;
 
   $: hero = data.site.hero;
@@ -8,7 +9,6 @@
   $: faqs = data.site.faq || [];
   $: villas = data.villas || [];
   $: waHref = contact.whatsapp ? `https://wa.me/${contact.whatsapp}` : '#';
-  $: interestOptions = [...villas.map((v) => v.name), 'Both villas (managed pair)', 'The full brochure & pricing'];
 
   let openFaq = null;
   const toggleFaq = (i) => (openFaq = openFaq === i ? null : i);
@@ -29,7 +29,7 @@
     <p class="lede reveal in" data-d="1">{hero.sub}{#if hero.priceFrom} From USD {hero.priceFrom}.{/if}</p>
     <div class="hero-cta reveal in" data-d="2">
       <a href="#enquire" class="btn btn-primary btn-lg">Enquire now <span class="arrow">→</span></a>
-      <a href="#enquire" class="btn btn-ghost btn-lg on-dark">Download brochure</a>
+      <a href="#enquire" on:click={() => brochureIntent.set(true)} class="btn btn-ghost btn-lg on-dark">Download brochure</a>
     </div>
   </div>
   <a href="#story" class="scroll-cue" aria-label="Scroll to explore">
@@ -234,7 +234,7 @@
     <p>Reserve a villa, or download the full brochure with pricing and floor plans.</p>
     <div class="hero-cta">
       <a href="#enquire" class="btn btn-primary btn-lg">Enquire now <span class="arrow">→</span></a>
-      <a href="#enquire" class="btn btn-ghost btn-lg on-dark">Download brochure</a>
+      <a href="#enquire" on:click={() => brochureIntent.set(true)} class="btn btn-ghost btn-lg on-dark">Download brochure</a>
     </div>
   </div>
 </section>
@@ -253,7 +253,7 @@
       </div>
     </div>
     <div class="reveal" data-d="1">
-      <EnquiryForm source="home" interests={interestOptions} defaultInterest="The full brochure & pricing" />
+      <EnquiryForm source="home" />
     </div>
   </div>
 </section>
