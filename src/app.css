@@ -510,3 +510,11 @@ body.nav-open .site-header.scrolled{
 .adm-ok{color:#3f6b3a;font-size:.85rem}
 .adm-thumb{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:8px;display:block}
 @media(max-width:600px){.adm-row,.adm-row3{grid-template-columns:1fr}}
+
+/* ---------- Legal pages ---------- */
+.legal-hero { min-height: 34vh; }
+.legal-body { max-width: 720px; }
+.legal-body h2 { font-family: var(--f-display); font-weight: 400; font-size: 1.5rem; margin: 2rem 0 .6rem; color: var(--ink); }
+.legal-body p { margin: 0 0 1rem; line-height: 1.7; color: var(--ink); }
+.legal-body a { color: var(--wood); }
+.legal-fine { font-size: .82rem; color: var(--ink-soft); }
