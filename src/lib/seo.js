@@ -1,6 +1,13 @@
 // src/lib/seo.js
 export const SITE_URL = 'https://www.guriescapes.com';
-export const absUrl = (path = '/') => SITE_URL + (path.startsWith('/') ? path : `/${path}`);
+export const absUrl = (path = '/') => {
+  if (/^https?:\/\//i.test(path)) return path;
+  return SITE_URL + (path.startsWith('/') ? path : `/${path}`);
+};
+
+export function ldScript(ld) {
+  return `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}<\/script>`;
+}
 
 export function orgLd(site = {}) {
   const c = site.contact || {};
@@ -15,12 +22,13 @@ export function orgLd(site = {}) {
 }
 
 export function villaLd(v = {}, site = {}) {
+  const price = v.priceFrom ? String(v.priceFrom).replace(/[^0-9]/g, '') : '';
   return {
     '@context': 'https://schema.org', '@type': 'RealEstateListing',
     name: v.name, url: absUrl(`/${v.slug}`),
     description: `${v.name} — ${v.bedrooms}-bedroom private pool villa on a ${v.plotM2} m² walled plot, Pongwe, Zanzibar.`,
     image: v.heroImage ? [absUrl(v.heroImage)] : undefined,
-    offers: v.priceFrom ? { '@type': 'Offer', price: String(v.priceFrom).replace(/[^0-9]/g, ''), priceCurrency: 'USD', availability: 'https://schema.org/InStock' } : undefined
+    offers: price ? { '@type': 'Offer', price, priceCurrency: 'USD', availability: 'https://schema.org/InStock' } : undefined
   };
 }
 

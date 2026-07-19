@@ -1,7 +1,7 @@
 <script>
   import Gallery from '$lib/components/Gallery.svelte';
   import EnquiryForm from '$lib/components/EnquiryForm.svelte';
-  import { villaLd, breadcrumbLd } from '$lib/seo';
+  import { villaLd, breadcrumbLd, ldScript } from '$lib/seo';
   export let data;
 
   $: v = data.villa;
@@ -15,7 +15,7 @@
 <svelte:head>
   <title>{v.name} — Guri Escapes Pongwe</title>
   <meta name="description" content={`${v.name} at Guri Escapes Pongwe — ${v.bedrooms}-bedroom private pool villa on a ${v.plotM2} m² walled plot, Zanzibar's east coast.`} />
-  {@html `<script type="application/ld+json">${JSON.stringify(ld)}</script>`}
+  {@html ldScript(ld)}
 </svelte:head>
 
 <section class="page-hero">
