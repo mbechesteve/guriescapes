@@ -48,6 +48,5 @@
       <span style="font-size:.85rem">© 2026 Guri Escapes Pongwe · www.guriescapes.com</span>
       <span style="font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)">Experience an escape</span>
     </div>
-    <p class="legal">This presentation is for informational and marketing purposes only and does not constitute a binding offer. Floor plans and unit sizes follow the architectural concept and may be subject to modification in final design. Yield, occupancy and appreciation figures are directional, drawn from RE/MAX Tanzania market reporting, and are not a guarantee of individual return.</p>
   </div>
 </footer>
