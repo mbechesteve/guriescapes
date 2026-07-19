@@ -2,6 +2,7 @@
   import EnquiryForm from '$lib/components/EnquiryForm.svelte';
   import Gallery from '$lib/components/Gallery.svelte';
   import { brochureIntent } from '$lib/stores/enquiry';
+  import { orgLd, faqLd } from '$lib/seo';
   export let data;
 
   $: hero = data.site.hero;
@@ -18,6 +19,7 @@
   $: testimonials = data.site.testimonials || [];
   $: availability = data.site.availability || {};
   $: hasTrust = trustBar.zipa || trustBar.remaxReportUrl || (trustBar.press && trustBar.press.length);
+  $: ld = [orgLd(data.site), faqLd(faqs)].filter(Boolean);
 
   let openFaq = null;
   const toggleFaq = (i) => (openFaq = openFaq === i ? null : i);
@@ -26,6 +28,7 @@
 <svelte:head>
   <title>Guri Escapes Pongwe — Private Pool Villas in Zanzibar</title>
   <meta name="description" content="Own a design-led, fully managed private pool villa on Zanzibar's calm east coast. Two contemporary villas in Pongwe — built for hands-off income, owned for a lifetime of slow island mornings." />
+  {@html `<script type="application/ld+json">${JSON.stringify(ld)}</script>`}
 </svelte:head>
 
 <!-- 01 · HERO -->

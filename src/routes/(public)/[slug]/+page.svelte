@@ -1,6 +1,7 @@
 <script>
   import Gallery from '$lib/components/Gallery.svelte';
   import EnquiryForm from '$lib/components/EnquiryForm.svelte';
+  import { villaLd, breadcrumbLd } from '$lib/seo';
   export let data;
 
   $: v = data.villa;
@@ -8,11 +9,13 @@
   $: wa = contact.whatsapp ? `https://wa.me/${contact.whatsapp}` : '#';
   // second image for the intro split, falling back to the hero image
   $: splitImage = (v.gallery && v.gallery[1]?.src) || v.heroImage;
+  $: ld = [villaLd(v, data.site), breadcrumbLd([{ name: 'Home', path: '/' }, { name: v.name, path: `/${v.slug}` }])];
 </script>
 
 <svelte:head>
   <title>{v.name} — Guri Escapes Pongwe</title>
   <meta name="description" content={`${v.name} at Guri Escapes Pongwe — ${v.bedrooms}-bedroom private pool villa on a ${v.plotM2} m² walled plot, Zanzibar's east coast.`} />
+  {@html `<script type="application/ld+json">${JSON.stringify(ld)}</script>`}
 </svelte:head>
 
 <section class="page-hero">
