@@ -107,7 +107,7 @@
 <form bind:this={form} on:submit={submit}>
   <div class="field"><label for="fn">First name</label><input id="fn" name="firstname" required placeholder="Jane" /></div>
   <div class="field"><label for="ln">Last name</label><input id="ln" name="lastname" required placeholder="Doe" /></div>
-  <div class="field"><label for="em">Email</label><input id="em" type="email" name="email" required placeholder="you@email.com" /></div>
+  <div class="field full"><label for="em">Email</label><input id="em" type="email" name="email" required placeholder="you@email.com" /></div>
   <div class="field full">
     <label for="ph">Phone number</label>
     <input id="ph" name="phone_national" type="tel" bind:this={phoneEl} placeholder="Enter phone number" autocomplete="tel" />
@@ -159,6 +159,18 @@
   :global(.iti) { width: 100%; display: block; }
   :global(.iti__tel-input),
   .field :global(.iti input[type='tel']) { width: 100%; }
+
+  /* The country dropdown renders on a light panel; force dark, legible text
+     (it would otherwise inherit the dark enquiry section's cream color). */
+  :global(.iti__country-list) { background: #fff; }
+  :global(.iti__search-input),
+  :global(.iti__country),
+  :global(.iti__country-name) { color: var(--ink, #2b2e18); }
+  :global(.iti__search-input) { background: #fff; }
+  :global(.iti__search-input::placeholder) { color: var(--ink-soft, #8a8577); }
+  :global(.iti__country .iti__dial-code) { color: var(--ink-soft, #8a8577); }
+  :global(.iti__country.iti__highlight),
+  :global(.iti__country:hover) { background: var(--sand, #f4efe4); }
 
   /* Multi-select "How can we help?" dropdown */
   .ms { position: relative; }
