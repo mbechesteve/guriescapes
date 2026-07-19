@@ -168,6 +168,9 @@
   :global(.iti__country-name) { color: var(--ink, #2b2e18); }
   :global(.iti__search-input) { background: #fff; }
   :global(.iti__search-input::placeholder) { color: var(--ink-soft, #8a8577); }
+  /* The selected "+254" dial code sits on the dark field — keep it legible. */
+  :global(.iti__selected-dial-code) { color: var(--cream, #fcf8ef); }
+  :global(.iti__arrow) { border-top-color: var(--cream, #fcf8ef); opacity: .7; }
   :global(.iti__country .iti__dial-code) { color: var(--ink-soft, #8a8577); }
   :global(.iti__country.iti__highlight),
   :global(.iti__country:hover) { background: var(--sand, #f4efe4); }

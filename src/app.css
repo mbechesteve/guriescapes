@@ -326,6 +326,16 @@ body.nav-open .site-header.scrolled{
 }
 .field input::placeholder,.field textarea::placeholder{color:rgba(252,248,239,.4)}
 .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--wood);background:rgba(252,248,239,.1)}
+/* Keep the dark field styling when the browser autofills (Chrome otherwise
+   forces a light background, which hides the cream text and dial code). */
+.field input:-webkit-autofill,
+.field input:-webkit-autofill:hover,
+.field input:-webkit-autofill:focus{
+  -webkit-text-fill-color:var(--cream);
+  -webkit-box-shadow:0 0 0 1000px var(--sage) inset;
+  caret-color:var(--cream);
+  border:1px solid var(--line-cream);
+}
 .field select option{color:#222}
 .form-note{grid-column:1/-1;font-size:.82rem;color:rgba(252,248,239,.6);margin:0}
 
