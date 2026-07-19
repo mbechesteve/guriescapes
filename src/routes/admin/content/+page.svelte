@@ -28,12 +28,12 @@
   const addItem = (a) => [...a, {}];
   const rmItem = (a, i) => a.filter((_, x) => x !== i);
 
-  async function uploadImage(ev, target, i, key = 'src') {
-    const file = ev.target.files?.[0]; if (!file) return;
+  async function uploadImage(ev) {
+    const file = ev.target.files?.[0]; if (!file) return null;
     const fd = new FormData(); fd.append('file', file);
     const res = await fetch('/api/upload', { method: 'POST', body: fd });
-    if (res.ok) { const { url } = await res.json(); target[i][key] = url; target = target; }
-    else alert('Image upload failed');
+    if (res.ok) return (await res.json()).url;
+    alert('Image upload failed'); return null;
   }
   async function uploadBrochure(ev) {
     const file = ev.target.files?.[0]; if (!file) return;
@@ -117,14 +117,14 @@
           <div class="adm-field"><label>Paragraph {i + 1}</label><textarea rows="3" bind:value={developer.body[i]}></textarea></div>
         {/each}
         <button type="button" class="adm-btn ghost sm" on:click={() => (developer.body = [...developer.body, ''])}>+ Paragraph</button>
-        <div class="adm-field"><label>Image URL (optional)</label><input bind:value={developer.image} /><input type="file" accept="image/*" on:change={(e)=>uploadImage(e,[developer],0,'image').then(()=>developer=developer)} /></div>
+        <div class="adm-field"><label>Image URL (optional)</label><input bind:value={developer.image} /><input type="file" accept="image/*" on:change={async (e) => { const url = await uploadImage(e); if (url) developer.image = url; }} /></div>
       </section>
 
       <section class="adm-section">
         <h2>Architectural renders</h2>
         {#each renders as r, i}
           <div class="adm-repeat">
-            <div class="adm-field"><label>Image</label><input bind:value={r.src} placeholder="/api/img/…" /><input type="file" accept="image/*" on:change={(e)=>uploadImage(e,renders,i)} /></div>
+            <div class="adm-field"><label>Image</label><input bind:value={r.src} placeholder="/api/img/…" /><input type="file" accept="image/*" on:change={async (e) => { const url = await uploadImage(e); if (url) { renders[i].src = url; renders = renders; } }} /></div>
             <div class="adm-field"><label>Alt text</label><input bind:value={r.alt} /></div>
             <div class="adm-field"><label>Caption</label><input bind:value={r.caption} /></div>
             <button type="button" class="adm-del" on:click={() => (renders = rmItem(renders, i))}>Remove</button>
@@ -137,7 +137,7 @@
         <h2>Floor plans</h2>
         {#each floorPlans as r, i}
           <div class="adm-repeat">
-            <div class="adm-field"><label>Image</label><input bind:value={r.src} /><input type="file" accept="image/*" on:change={(e)=>uploadImage(e,floorPlans,i)} /></div>
+            <div class="adm-field"><label>Image</label><input bind:value={r.src} /><input type="file" accept="image/*" on:change={async (e) => { const url = await uploadImage(e); if (url) { floorPlans[i].src = url; floorPlans = floorPlans; } }} /></div>
             <div class="adm-field"><label>Alt text</label><input bind:value={r.alt} /></div>
             <div class="adm-field"><label>Caption</label><input bind:value={r.caption} /></div>
             <button type="button" class="adm-del" on:click={() => (floorPlans = rmItem(floorPlans, i))}>Remove</button>
@@ -150,7 +150,7 @@
         <h2>Construction progress</h2>
         {#each progress as r, i}
           <div class="adm-repeat">
-            <div class="adm-field"><label>Image</label><input bind:value={r.src} /><input type="file" accept="image/*" on:change={(e)=>uploadImage(e,progress,i)} /></div>
+            <div class="adm-field"><label>Image</label><input bind:value={r.src} /><input type="file" accept="image/*" on:change={async (e) => { const url = await uploadImage(e); if (url) { progress[i].src = url; progress = progress; } }} /></div>
             <div class="adm-field"><label>Alt text</label><input bind:value={r.alt} /></div>
             <div class="adm-row"><div class="adm-field"><label>Date label</label><input bind:value={r.date} placeholder="Jul 2026" /></div><div class="adm-field"><label>Caption</label><input bind:value={r.caption} /></div></div>
             <button type="button" class="adm-del" on:click={() => (progress = rmItem(progress, i))}>Remove</button>
