@@ -894,10 +894,32 @@ git commit -m "Reframe stale 2026 dates in invest section to 2027"
 ## Task 9: New home sections (developer, renders, floor plans, progress, trust/testimonials, scarcity)
 
 **Files:**
+- Modify: `src/routes/(public)/+layout.server.js`
 - Modify: `src/routes/(public)/+page.svelte`
 
 **Interfaces:**
-- Consumes: `data.site.developer`, `.renders`, `.floorPlans`, `.progress`, `.trustBar`, `.testimonials`, `.availability` (from `getSiteContent`, already passed to the page via `+page.server.js` → confirm `data.site` includes them; `getSiteContent` returns the whole doc so they're present).
+- Consumes: `data.site.developer`, `.renders`, `.floorPlans`, `.progress`, `.trustBar`, `.testimonials`, `.availability`.
+- **IMPORTANT:** `(public)/+layout.server.js` currently returns a *whitelist* (`site: { hero, metrics, contact, faq }`). The new fields must be added to that whitelist (Step 0) or they arrive `undefined` on the page.
+
+- [ ] **Step 0: Extend the layout whitelist so the new fields reach the page**
+
+In `src/routes/(public)/+layout.server.js`, extend the returned `site` object:
+
+```js
+    site: {
+      hero: site.hero,
+      metrics: site.metrics,
+      contact: site.contact,
+      faq: site.faq,
+      developer: site.developer || null,
+      renders: site.renders || [],
+      floorPlans: site.floorPlans || [],
+      progress: site.progress || [],
+      trustBar: site.trustBar || null,
+      testimonials: site.testimonials || [],
+      availability: site.availability || null
+    }
+```
 
 - [ ] **Step 1: Add reactive derived vars**
 
@@ -1048,7 +1070,7 @@ Run: `npm run build`; `npm run dev`. With DB still on defaults (developer seeded
 - [ ] **Step 7: Commit**
 
 ```bash
-git add "src/routes/(public)/+page.svelte"
+git add "src/routes/(public)/+layout.server.js" "src/routes/(public)/+page.svelte"
 git commit -m "Add developer, renders, floor plans, progress, trust, testimonials, scarcity sections"
 ```
 
