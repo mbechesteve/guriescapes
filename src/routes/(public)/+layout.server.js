@@ -7,7 +7,14 @@ export async function load() {
       hero: site.hero,
       metrics: site.metrics,
       contact: site.contact,
-      faq: site.faq
+      faq: site.faq,
+      developer: site.developer || null,
+      renders: site.renders || [],
+      floorPlans: site.floorPlans || [],
+      progress: site.progress || [],
+      trustBar: site.trustBar || null,
+      testimonials: site.testimonials || [],
+      availability: site.availability || null
     }
   };
 }

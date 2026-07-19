@@ -1,5 +1,6 @@
 <script>
   import EnquiryForm from '$lib/components/EnquiryForm.svelte';
+  import Gallery from '$lib/components/Gallery.svelte';
   import { brochureIntent } from '$lib/stores/enquiry';
   export let data;
 
@@ -9,6 +10,14 @@
   $: faqs = data.site.faq || [];
   $: villas = data.villas || [];
   $: waHref = contact.whatsapp ? `https://wa.me/${contact.whatsapp}` : '#';
+  $: developer = data.site.developer || {};
+  $: renders = data.site.renders || [];
+  $: floorPlans = data.site.floorPlans || [];
+  $: progress = data.site.progress || [];
+  $: trustBar = data.site.trustBar || {};
+  $: testimonials = data.site.testimonials || [];
+  $: availability = data.site.availability || {};
+  $: hasTrust = trustBar.zipa || trustBar.remaxReportUrl || (trustBar.press && trustBar.press.length);
 
   let openFaq = null;
   const toggleFaq = (i) => (openFaq = openFaq === i ? null : i);
@@ -78,6 +87,9 @@
       <p class="eyebrow">Discover our two villas</p>
       <h2>Two villas, one quiet coast.</h2>
       <p class="lede" style="margin-top:1.4rem">Two near-identical villas on their own plot, take one as a private escape or both as a managed pair.</p>
+      {#if availability.total}
+        <p class="avail reveal"><span class="avail-dot"></span>{availability.reserved || 0} of {availability.total} villas reserved{availability.note ? ` · ${availability.note}` : ''}</p>
+      {/if}
     </div>
     <div class="villa-grid">
       {#each villas as v, i}
@@ -125,6 +137,24 @@
   </div>
 </section>
 
+{#if developer.heading}
+<section class="section-pad" id="developer">
+  <div class="wrap split">
+    <div class="reveal">
+      <p class="eyebrow">{developer.eyebrow || 'About the developer'}</p>
+      <h2>{developer.heading}</h2>
+      {#each developer.body || [] as para, i}
+        <p class={i === 0 ? 'lede' : ''} style={i === 0 ? 'margin-top:1.4rem' : ''}>{para}</p>
+      {/each}
+      {#if developer.since}<p class="dev-since"><b>{developer.since}</b> delivering projects · Guri Build Zanzibar Ltd</p>{/if}
+    </div>
+    {#if developer.image}
+      <div class="split-media reveal" data-d="1"><img src={developer.image} alt="Guri Build Zanzibar project" loading="lazy" decoding="async" /></div>
+    {/if}
+  </div>
+</section>
+{/if}
+
 <!-- 06 · WHY INVEST -->
 <section class="invest section-pad" id="invest">
   <div class="invest-bg"><img src="/assets/img/beach-palm.jpg" alt="" /></div>
@@ -169,6 +199,41 @@
   </div>
 </section>
 
+{#if renders.length}
+<section class="section-pad" id="renders">
+  <div class="wrap">
+    <div class="reveal" style="max-width:560px"><p class="eyebrow">Architectural renders</p><h2>A look at the design.</h2></div>
+    <Gallery images={renders} />
+  </div>
+</section>
+{/if}
+
+{#if floorPlans.length}
+<section class="section-pad" id="floorplans" style="background:var(--sand)">
+  <div class="wrap">
+    <div class="reveal" style="max-width:560px"><p class="eyebrow">Floor plans</p><h2>Every square metre, considered.</h2></div>
+    <div class="plan-grid reveal">
+      {#each floorPlans as p}
+        <figure class="plan"><img src={p.src} alt={p.alt || 'Villa floor plan'} loading="lazy" decoding="async" />{#if p.caption}<figcaption>{p.caption}</figcaption>{/if}</figure>
+      {/each}
+    </div>
+  </div>
+</section>
+{/if}
+
+{#if progress.length}
+<section class="section-pad" id="progress">
+  <div class="wrap">
+    <div class="reveal" style="max-width:560px"><p class="eyebrow">Construction progress</p><h2>Watch it take shape.</h2></div>
+    <div class="prog-grid reveal">
+      {#each progress as p}
+        <figure class="prog"><img src={p.src} alt={p.alt || 'Construction progress'} loading="lazy" decoding="async" /><figcaption>{p.date ? p.date + ' · ' : ''}{p.caption || ''}</figcaption></figure>
+      {/each}
+    </div>
+  </div>
+</section>
+{/if}
+
 <!-- 08 · VILLA FEATURES -->
 <section class="section-pad" id="features" style="background:var(--sand)">
   <div class="wrap">
@@ -202,6 +267,28 @@
     </div>
   </div>
 </section>
+
+{#if hasTrust || testimonials.length}
+<section class="section-pad" id="trust" style="background:var(--sand)">
+  <div class="wrap">
+    {#if hasTrust}
+      <div class="trust-bar reveal">
+        {#if trustBar.zipa}<div class="trust-item"><span class="ti-k">ZIPA registered</span><span class="ti-v">{trustBar.zipa}</span></div>{/if}
+        {#if trustBar.remaxReportUrl}<div class="trust-item"><a href={trustBar.remaxReportUrl} target="_blank" rel="noopener">RE/MAX Tanzania market report ↗</a></div>{/if}
+        {#each trustBar.press || [] as pr}<div class="trust-item"><a href={pr.url} target="_blank" rel="noopener">{pr.label} ↗</a></div>{/each}
+      </div>
+      {#if trustBar.note}<p class="trust-note">{trustBar.note}</p>{/if}
+    {/if}
+    {#if testimonials.length}
+      <div class="tst-grid reveal">
+        {#each testimonials as t}
+          <figure class="tst"><blockquote>“{t.quote}”</blockquote><figcaption>{t.name}{t.role ? `, ${t.role}` : ''}</figcaption></figure>
+        {/each}
+      </div>
+    {/if}
+  </div>
+</section>
+{/if}
 
 <!-- 10 · FAQ -->
 <section class="section-pad" id="faq">
@@ -257,3 +344,24 @@
     </div>
   </div>
 </section>
+
+<style>
+  .dev-since { margin-top: 1.4rem; color: var(--ink-soft); font-size: .9rem; }
+
+  .plan-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.2rem; margin-top: 2rem; }
+  .plan img, .prog img { width: 100%; height: auto; border-radius: 12px; display: block; }
+  .plan figcaption, .prog figcaption { margin-top: .6rem; font-size: .85rem; color: var(--ink-soft); }
+  .prog-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-top: 2rem; }
+
+  .trust-bar { display: flex; flex-wrap: wrap; gap: 1rem 2.4rem; align-items: center; justify-content: center; padding: 1.4rem 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .trust-item { font-size: .9rem; color: var(--ink); } .trust-item a { color: var(--wood); text-decoration: none; }
+  .ti-k { display:block; font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-soft); }
+  .trust-note { text-align:center; color:var(--ink-soft); font-size:.85rem; margin-top:1rem; }
+  .tst-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.4rem; margin-top:2.4rem; }
+  .tst { margin:0; background:#fff; border:1px solid var(--line); border-radius:14px; padding:1.6rem; }
+  .tst blockquote { margin:0 0 1rem; font-family:var(--f-display); font-size:1.15rem; line-height:1.5; color:var(--ink); }
+  .tst figcaption { font-size:.85rem; color:var(--ink-soft); }
+
+  .avail { display:inline-flex; align-items:center; gap:.5rem; margin-top:1.2rem; font-size:.9rem; color:var(--wood); font-weight:500; }
+  .avail-dot { width:8px; height:8px; border-radius:50%; background:var(--gold); box-shadow:0 0 0 4px rgba(190,143,91,.2); }
+</style>
