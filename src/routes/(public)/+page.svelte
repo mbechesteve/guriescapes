@@ -141,20 +141,28 @@
 </section>
 
 {#if developer.heading}
-<section class="section-pad" id="developer">
-  <div class="wrap split">
-    <div class="reveal">
+<section class="section-pad dev" id="developer">
+  <img class="dev-frond" src="/assets/img/frond.svg" alt="" aria-hidden="true" />
+  <div class="wrap dev-grid">
+    <div class="reveal dev-head">
       <p class="eyebrow">{developer.eyebrow || 'About the developer'}</p>
       <h2>{developer.heading}</h2>
-      {#each developer.body || [] as para, i}
-        <p class={i === 0 ? 'lede' : ''} style={i === 0 ? 'margin-top:1.4rem' : ''}>{para}</p>
-      {/each}
-      {#if developer.since}<p class="dev-since"><b>{developer.since}</b> delivering projects · Guri Build Zanzibar Ltd</p>{/if}
+      <div class="dev-creds">
+        {#if developer.since}<span class="dev-cred"><b>{developer.since}</b><small>delivering projects</small></span>{/if}
+        <span class="dev-cred"><b>Guri Build Kenya</b><small>delivery heritage</small></span>
+        <span class="dev-cred"><b>Guri Build Zanzibar Ltd</b><small>the registered developer</small></span>
+      </div>
     </div>
-    {#if developer.image}
-      <div class="split-media reveal" data-d="1"><img src={developer.image} alt="Guri Build Zanzibar project" loading="lazy" decoding="async" /></div>
-    {/if}
+    <div class="reveal dev-body" data-d="1">
+      {#each developer.body || [] as para, i}
+        <p class={i === 0 ? 'lede' : ''}>{para}</p>
+      {/each}
+    </div>
   </div>
+
+  {#if developer.image}
+    <div class="wrap dev-figure reveal"><img src={developer.image} alt="A Guri Build project" loading="lazy" decoding="async" /></div>
+  {/if}
 </section>
 {/if}
 
@@ -351,7 +359,24 @@
 </section>
 
 <style>
-  .dev-since { margin-top: 1.4rem; color: var(--ink-soft); font-size: .9rem; }
+  .dev { position: relative; overflow: hidden; }
+  .dev-frond { position: absolute; right: -80px; bottom: -60px; width: clamp(260px, 34vw, 460px); color: var(--gold); opacity: .08; transform: rotate(8deg); pointer-events: none; }
+  .dev-grid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: clamp(2rem, 6vw, 5rem); align-items: start; position: relative; z-index: 1; }
+  .dev-head { position: sticky; top: 100px; }
+  .dev-body .lede { margin-top: 0; }
+  .dev-body p + p { margin-top: 1.1rem; }
+  .dev-creds { display: flex; flex-wrap: wrap; gap: 1.4rem 2.2rem; margin-top: 2rem; padding-top: 1.6rem; border-top: 1px solid var(--line); }
+  .dev-cred { display: flex; flex-direction: column; gap: .2rem; }
+  .dev-cred b { font-family: var(--f-display); font-weight: 400; font-size: 1.35rem; color: var(--ink); line-height: 1.05; }
+  .dev-cred small { font-size: .7rem; letter-spacing: .13em; text-transform: uppercase; color: var(--wood); }
+
+  .dev-figure { margin-top: clamp(2rem, 4vw, 3.4rem); position: relative; z-index: 1; }
+  .dev-figure img { width: 100%; height: auto; border-radius: var(--r); display: block; }
+
+  @media (max-width: 820px) {
+    .dev-grid { grid-template-columns: 1fr; gap: 1.8rem; }
+    .dev-head { position: static; }
+  }
 
   .plan-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.2rem; margin-top: 2rem; }
   .plan img, .prog img { width: 100%; height: auto; border-radius: 12px; display: block; }
