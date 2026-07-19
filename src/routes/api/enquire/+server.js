@@ -1,6 +1,8 @@
 import { json, error } from '@sveltejs/kit';
-import { enquiries } from '$lib/server/db';
-import { sendEmail, notifyAddress, newEnquiryEmail } from '$lib/server/email';
+import { enquiries, documents } from '$lib/server/db';
+import { sendEmail, notifyAddress, newEnquiryEmail, brochureEmail } from '$lib/server/email';
+import { getSiteContent } from '$lib/server/content';
+import { ObjectId } from 'mongodb';
 
 const str = (v, max) => String(v ?? '').trim().slice(0, max);
 
@@ -23,12 +25,18 @@ export async function POST({ request, url }) {
     throw error(400, 'Please provide a valid email address.');
   }
 
+  const helpRaw = Array.isArray(body.help) ? body.help : (body.help ? [body.help] : []);
+  const help = helpRaw.map((h) => str(h, 120)).filter(Boolean).slice(0, 12);
+  const timeframe = str(body.timeframe, 60);
+
   const doc = {
     firstname,
     lastname,
     email,
     phone: str(body.phone, 60),
     interest: str(body.interest, 120),
+    help,
+    timeframe,
     message: str(body.message, 4000),
     source: str(body.source, 40),
     createdAt: new Date(),
@@ -60,6 +68,37 @@ export async function POST({ request, url }) {
     }
   } catch (e) {
     console.error('Enquiry notification failed:', e);
+  }
+
+  // Brochure to the enquirer (best-effort).
+  try {
+    const wantsBrochure = doc.source === 'brochure' ||
+      doc.help.some((h) => /brochure/i.test(h)) || /brochure/i.test(doc.interest);
+    if (wantsBrochure) {
+      const site = await getSiteContent();
+      const b = site?.brochure || {};
+      let attachments;
+      if (b.fileUrl) {
+        const m = /\/api\/doc\/([a-f0-9]{24})/.exec(b.fileUrl);
+        if (m) {
+          const col = await documents();
+          const fileDoc = await col.findOne({ _id: new ObjectId(m[1]) });
+          if (fileDoc?.data) {
+            const bin = fileDoc.data;
+            const bytes = bin && bin.buffer ? Buffer.from(bin.buffer) : Buffer.from(bin);
+            attachments = [{ filename: fileDoc.name || 'Guri-Escapes-Pongwe.pdf', content: bytes.toString('base64') }];
+          }
+        }
+      }
+      await sendEmail({
+        to: doc.email,
+        subject: 'Your Guri Escapes Pongwe brochure',
+        html: brochureEmail(doc, !!attachments, site?.contact || {}),
+        attachments
+      });
+    }
+  } catch (e) {
+    console.error('Brochure email failed:', e);
   }
 
   return json({ ok: true });

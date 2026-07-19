@@ -1,6 +1,7 @@
 <script>
   import Gallery from '$lib/components/Gallery.svelte';
   import EnquiryForm from '$lib/components/EnquiryForm.svelte';
+  import { villaLd, breadcrumbLd, ldScript } from '$lib/seo';
   export let data;
 
   $: v = data.villa;
@@ -8,15 +9,17 @@
   $: wa = contact.whatsapp ? `https://wa.me/${contact.whatsapp}` : '#';
   // second image for the intro split, falling back to the hero image
   $: splitImage = (v.gallery && v.gallery[1]?.src) || v.heroImage;
+  $: ld = [villaLd(v, data.site), breadcrumbLd([{ name: 'Home', path: '/' }, { name: v.name, path: `/${v.slug}` }])];
 </script>
 
 <svelte:head>
   <title>{v.name} — Guri Escapes Pongwe</title>
   <meta name="description" content={`${v.name} at Guri Escapes Pongwe — ${v.bedrooms}-bedroom private pool villa on a ${v.plotM2} m² walled plot, Zanzibar's east coast.`} />
+  {@html ldScript(ld)}
 </svelte:head>
 
 <section class="page-hero">
-  <img class="ph-bg" src={v.heroImage} alt={v.name} />
+  <img class="ph-bg" src={v.heroImage} alt={v.name} fetchpriority="high" />
   <div class="wrap ph-inner">
     <p class="crumb"><a href="/">Home</a> / <a href="/#villas">Villas</a> / {v.name}</p>
     <h1>{v.name}</h1>
@@ -40,7 +43,7 @@
       <a href="#enquire" class="btn btn-primary" style="margin-top:.6rem">Enquire about {v.name.split(' — ')[0]} <span class="arrow">→</span></a>
     </div>
     <div class="split-media reveal" data-d="1">
-      <img src={splitImage} alt={v.name} />
+      <img src={splitImage} alt={v.name} loading="lazy" decoding="async" />
       <span class="tag">Pool terrace</span>
     </div>
   </div>
@@ -81,7 +84,7 @@
       </div>
     </div>
     <div class="reveal" data-d="1">
-      <EnquiryForm source={v.slug} defaultInterest={v.name} interests={[v.name, 'Both villas (managed pair)', 'The full brochure & pricing']} />
+      <EnquiryForm source={v.slug} preselectHelp={['Help me compare Villa A and Villa B']} />
     </div>
   </div>
 </section>

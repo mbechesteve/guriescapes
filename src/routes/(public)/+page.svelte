@@ -1,5 +1,8 @@
 <script>
   import EnquiryForm from '$lib/components/EnquiryForm.svelte';
+  import Gallery from '$lib/components/Gallery.svelte';
+  import { brochureIntent } from '$lib/stores/enquiry';
+  import { orgLd, faqLd, ldScript } from '$lib/seo';
   export let data;
 
   $: hero = data.site.hero;
@@ -8,7 +11,15 @@
   $: faqs = data.site.faq || [];
   $: villas = data.villas || [];
   $: waHref = contact.whatsapp ? `https://wa.me/${contact.whatsapp}` : '#';
-  $: interestOptions = [...villas.map((v) => v.name), 'Both villas (managed pair)', 'The full brochure & pricing'];
+  $: developer = data.site.developer || {};
+  $: renders = data.site.renders || [];
+  $: floorPlans = data.site.floorPlans || [];
+  $: progress = data.site.progress || [];
+  $: trustBar = data.site.trustBar || {};
+  $: testimonials = data.site.testimonials || [];
+  $: availability = data.site.availability || {};
+  $: hasTrust = trustBar.zipa || trustBar.remaxReportUrl || (trustBar.press && trustBar.press.length);
+  $: ld = [orgLd(data.site), faqLd(faqs)].filter(Boolean);
 
   let openFaq = null;
   const toggleFaq = (i) => (openFaq = openFaq === i ? null : i);
@@ -17,19 +28,20 @@
 <svelte:head>
   <title>Guri Escapes Pongwe — Private Pool Villas in Zanzibar</title>
   <meta name="description" content="Own a design-led, fully managed private pool villa on Zanzibar's calm east coast. Two contemporary villas in Pongwe — built for hands-off income, owned for a lifetime of slow island mornings." />
+  {@html ldScript(ld)}
 </svelte:head>
 
 <!-- 01 · HERO -->
 <section class="hero" id="top">
-  <div class="hero-bg"><img src="/assets/img/hero.jpg" alt="A villa interior opening onto golden-hour island light" /></div>
-  <img class="hero-frond" src="/assets/img/frond.svg" alt="" aria-hidden="true" />
+  <div class="hero-bg"><img src="/assets/img/hero.jpg" alt="A villa interior opening onto golden-hour island light" fetchpriority="high" /></div>
+  <img class="hero-frond" src="/assets/img/frond.svg" alt="" aria-hidden="true" loading="lazy" decoding="async" />
   <div class="wrap hero-inner">
     <p class="eyebrow" style="color:var(--cream)">{hero.eyebrow}</p>
     <h1 class="reveal in">{hero.headline}</h1>
     <p class="lede reveal in" data-d="1">{hero.sub}{#if hero.priceFrom} From USD {hero.priceFrom}.{/if}</p>
     <div class="hero-cta reveal in" data-d="2">
       <a href="#enquire" class="btn btn-primary btn-lg">Enquire now <span class="arrow">→</span></a>
-      <a href="#enquire" class="btn btn-ghost btn-lg on-dark">Download brochure</a>
+      <a href="#enquire" on:click={() => brochureIntent.set(true)} class="btn btn-ghost btn-lg on-dark">Download brochure</a>
     </div>
   </div>
   <a href="#story" class="scroll-cue" aria-label="Scroll to explore">
@@ -49,7 +61,7 @@
       <a href="#enquire" class="btn btn-ghost" style="margin-top:.8rem">Enquire now <span class="arrow">→</span></a>
     </div>
     <div class="split-media reveal" data-d="1">
-      <img src="/assets/img/lifestyle-hammock.jpg" alt="A hammock strung between palms in dappled island light" />
+      <img src="/assets/img/lifestyle-hammock.jpg" alt="A hammock strung between palms in dappled island light" loading="lazy" decoding="async" />
       <span class="tag">Pongwe · slow mornings</span>
     </div>
   </div>
@@ -57,7 +69,7 @@
 
 <!-- 03 · KEY NUMBERS -->
 <section class="metrics" aria-label="The numbers at a glance">
-  <img class="frond-wm" src="/assets/img/frond.svg" alt="" aria-hidden="true" />
+  <img class="frond-wm" src="/assets/img/frond.svg" alt="" aria-hidden="true" loading="lazy" decoding="async" />
   <div class="wrap" style="padding-top:clamp(56px,7vw,90px);padding-bottom:1.4rem">
     <p class="eyebrow center reveal" style="display:flex;justify-content:center">The numbers, at a glance</p>
   </div>
@@ -78,11 +90,14 @@
       <p class="eyebrow">Discover our two villas</p>
       <h2>Two villas, one quiet coast.</h2>
       <p class="lede" style="margin-top:1.4rem">Two near-identical villas on their own plot, take one as a private escape or both as a managed pair.</p>
+      {#if availability.total}
+        <p class="avail reveal"><span class="avail-dot"></span>{availability.reserved || 0} of {availability.total} villas reserved{availability.note ? ` · ${availability.note}` : ''}</p>
+      {/if}
     </div>
     <div class="villa-grid">
       {#each villas as v, i}
         <a class="villa-card reveal" href="/{v.slug}" data-d={i + 1}>
-          <img src={v.cardImage} alt={v.name} />
+          <img src={v.cardImage} alt={v.name} loading="lazy" decoding="async" />
           <div class="vc-body">
             <h3>{v.name}</h3>
             <p class="vc-meta">{v.plotM2} m² plot · {v.builtUpM2} m² built-up · {v.bedrooms} bedrooms</p>
@@ -125,9 +140,35 @@
   </div>
 </section>
 
+{#if developer.heading}
+<section class="section-pad dev" id="developer">
+  <img class="dev-frond" src="/assets/img/frond.svg" alt="" aria-hidden="true" />
+  <div class="wrap dev-grid">
+    <div class="reveal dev-head">
+      <p class="eyebrow">{developer.eyebrow || 'About the developer'}</p>
+      <h2>{developer.heading}</h2>
+      <div class="dev-creds">
+        {#if developer.since}<span class="dev-cred"><b>{developer.since}</b><small>delivering projects</small></span>{/if}
+        <span class="dev-cred"><b>Guri Build Kenya</b><small>delivery heritage</small></span>
+        <span class="dev-cred"><b>Guri Build Zanzibar Ltd</b><small>the registered developer</small></span>
+      </div>
+    </div>
+    <div class="reveal dev-body" data-d="1">
+      {#each developer.body || [] as para, i}
+        <p class={i === 0 ? 'lede' : ''}>{para}</p>
+      {/each}
+    </div>
+  </div>
+
+  {#if developer.image}
+    <div class="wrap dev-figure reveal"><img src={developer.image} alt="A Guri Build project" loading="lazy" decoding="async" /></div>
+  {/if}
+</section>
+{/if}
+
 <!-- 06 · WHY INVEST -->
 <section class="invest section-pad" id="invest">
-  <div class="invest-bg"><img src="/assets/img/beach-palm.jpg" alt="" /></div>
+  <div class="invest-bg"><img src="/assets/img/beach-palm.jpg" alt="" aria-hidden="true" loading="lazy" decoding="async" /></div>
   <div class="wrap">
     <div class="reveal" style="max-width:680px">
       <p class="eyebrow">Why invest in Pongwe, Zanzibar</p>
@@ -136,10 +177,10 @@
     <div class="invest-stats">
       <div class="invest-stat reveal"><div class="num">15–18%</div><div class="lab">ROI potential</div><div class="cap">Target gross yields for Zanzibar villas — best in the region.</div></div>
       <div class="invest-stat reveal" data-d="1"><div class="num">65%+</div><div class="lab">Occupancy</div><div class="cap">Island-wide and rising with record tourism.</div></div>
-      <div class="invest-stat reveal" data-d="2"><div class="num">30–40%</div><div class="lab">Capital growth</div><div class="cap">Projected land appreciation to 2026.</div></div>
+      <div class="invest-stat reveal" data-d="2"><div class="num">30–40%</div><div class="lab">Capital growth</div><div class="cap">Projected land appreciation to 2027.</div></div>
       <div class="invest-stat reveal" data-d="3"><div class="num">100%</div><div class="lab">International buyers</div><div class="cap">Secure leasehold structure built for foreign owners.</div></div>
     </div>
-    <p class="invest-note reveal">Tourist arrivals are on track to surpass 1 million by 2026 — and villas earn in USD, a natural hedge against currency movement.</p>
+    <p class="invest-note reveal">Tourist arrivals have passed 1 million and continue to climb through 2027 — and villas earn in USD, a natural hedge against currency movement.</p>
   </div>
 </section>
 
@@ -147,7 +188,7 @@
 <section class="section-pad" id="inside">
   <div class="wrap split flip">
     <div class="split-media reveal">
-      <img src="/assets/img/interior-lamp.jpg" alt="Open-plan living and dining beneath woven pendant lights" />
+      <img src="/assets/img/interior-lamp.jpg" alt="Open-plan living and dining beneath woven pendant lights" loading="lazy" decoding="async" />
       <span class="tag">Open-plan living · 42 m²</span>
     </div>
     <div class="reveal" data-d="1">
@@ -168,6 +209,41 @@
     </div>
   </div>
 </section>
+
+{#if renders.length}
+<section class="section-pad" id="renders">
+  <div class="wrap">
+    <div class="reveal" style="max-width:560px"><p class="eyebrow">Architectural renders</p><h2>A look at the design.</h2></div>
+    <Gallery images={renders} />
+  </div>
+</section>
+{/if}
+
+{#if floorPlans.length}
+<section class="section-pad" id="floorplans" style="background:var(--sand)">
+  <div class="wrap">
+    <div class="reveal" style="max-width:560px"><p class="eyebrow">Floor plans</p><h2>Every square metre, considered.</h2></div>
+    <div class="plan-grid reveal">
+      {#each floorPlans as p}
+        <figure class="plan"><img src={p.src} alt={p.alt || 'Villa floor plan'} loading="lazy" decoding="async" />{#if p.caption}<figcaption>{p.caption}</figcaption>{/if}</figure>
+      {/each}
+    </div>
+  </div>
+</section>
+{/if}
+
+{#if progress.length}
+<section class="section-pad" id="progress">
+  <div class="wrap">
+    <div class="reveal" style="max-width:560px"><p class="eyebrow">Construction progress</p><h2>Watch it take shape.</h2></div>
+    <div class="prog-grid reveal">
+      {#each progress as p}
+        <figure class="prog"><img src={p.src} alt={p.alt || 'Construction progress'} loading="lazy" decoding="async" /><figcaption>{p.date ? p.date + ' · ' : ''}{p.caption || ''}</figcaption></figure>
+      {/each}
+    </div>
+  </div>
+</section>
+{/if}
 
 <!-- 08 · VILLA FEATURES -->
 <section class="section-pad" id="features" style="background:var(--sand)">
@@ -203,6 +279,28 @@
   </div>
 </section>
 
+{#if hasTrust || testimonials.length}
+<section class="section-pad" id="trust" style="background:var(--sand)">
+  <div class="wrap">
+    {#if hasTrust}
+      <div class="trust-bar reveal">
+        {#if trustBar.zipa}<div class="trust-item"><span class="ti-k">ZIPA registered</span><span class="ti-v">{trustBar.zipa}</span></div>{/if}
+        {#if trustBar.remaxReportUrl}<div class="trust-item"><a href={trustBar.remaxReportUrl} target="_blank" rel="noopener">RE/MAX Tanzania market report ↗</a></div>{/if}
+        {#each trustBar.press || [] as pr}<div class="trust-item"><a href={pr.url} target="_blank" rel="noopener">{pr.label} ↗</a></div>{/each}
+      </div>
+      {#if trustBar.note}<p class="trust-note">{trustBar.note}</p>{/if}
+    {/if}
+    {#if testimonials.length}
+      <div class="tst-grid reveal">
+        {#each testimonials as t}
+          <figure class="tst"><blockquote>“{t.quote}”</blockquote><figcaption>{t.name}{t.role ? `, ${t.role}` : ''}</figcaption></figure>
+        {/each}
+      </div>
+    {/if}
+  </div>
+</section>
+{/if}
+
 <!-- 10 · FAQ -->
 <section class="section-pad" id="faq">
   <div class="wrap">
@@ -227,14 +325,14 @@
 
 <!-- 09 · CLOSING CTA -->
 <section class="closing section-pad" id="brochure">
-  <div class="closing-bg"><img src="/assets/img/pool.jpg" alt="" /></div>
+  <div class="closing-bg"><img src="/assets/img/pool.jpg" alt="" aria-hidden="true" loading="lazy" decoding="async" /></div>
   <div class="wrap reveal">
     <p class="eyebrow center" style="justify-content:center">Experience an escape</p>
     <h2>Discover your next Zanzibar investment.</h2>
     <p>Reserve a villa, or download the full brochure with pricing and floor plans.</p>
     <div class="hero-cta">
       <a href="#enquire" class="btn btn-primary btn-lg">Enquire now <span class="arrow">→</span></a>
-      <a href="#enquire" class="btn btn-ghost btn-lg on-dark">Download brochure</a>
+      <a href="#enquire" on:click={() => brochureIntent.set(true)} class="btn btn-ghost btn-lg on-dark">Download brochure</a>
     </div>
   </div>
 </section>
@@ -249,11 +347,51 @@
       <div class="contact-line">
         <a href={`mailto:${contact.email}`}><svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="M3 7l9 6 9-6" /></svg> {contact.email}</a>
         <a href={`tel:${contact.phone}`}><svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 4h4l2 5-3 2a14 14 0 0 0 6 6l2-3 5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 6a2 2 0 0 1 2-2z" /></svg> {contact.phone}</a>
-        <a href={waHref}><svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21l1.6-5A8.5 8.5 0 1 1 8 19.4z" /><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5M9 9.5c0-.6.4-1 1-1s1 1 1.4 1.8M14.5 15c.6 0 1-.4 1-1s-1-1-1.8-1.4" /></svg> WhatsApp · start chat</a>
+        {#if contact.phoneTz}<a href={`tel:${contact.phoneTz.replace(/\s/g,'')}`}><svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 4h4l2 5-3 2a14 14 0 0 0 6 6l2-3 5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 6a2 2 0 0 1 2-2z" /></svg> {contact.phoneTz} · Call only</a>{/if}
+        {#if contact.calendly}<a href={contact.calendly} target="_blank" rel="noopener"><svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M3 9h18M8 3v4M16 3v4" /></svg> Book a call ↗</a>{/if}
+        <a href={waHref}><svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21l1.6-5A8.5 8.5 0 1 1 8 19.4z" /><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5M9 9.5c0-.6.4-1 1-1s1 1 1.4 1.8M14.5 15c.6 0 1-.4 1-1s-1-1-1.8-1.4" /></svg> WhatsApp{contact.whatsappNote ? ` · ${contact.whatsappNote}` : ' · start chat'}</a>
       </div>
     </div>
     <div class="reveal" data-d="1">
-      <EnquiryForm source="home" interests={interestOptions} defaultInterest="The full brochure & pricing" />
+      <EnquiryForm source="home" />
     </div>
   </div>
 </section>
+
+<style>
+  .dev { position: relative; overflow: hidden; }
+  .dev-frond { position: absolute; right: -80px; bottom: -60px; width: clamp(260px, 34vw, 460px); color: var(--gold); opacity: .08; transform: rotate(8deg); pointer-events: none; }
+  .dev-grid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: clamp(2rem, 6vw, 5rem); align-items: start; position: relative; z-index: 1; }
+  .dev-head { position: sticky; top: 100px; }
+  .dev-body .lede { margin-top: 0; }
+  .dev-body p + p { margin-top: 1.1rem; }
+  .dev-creds { display: flex; flex-wrap: wrap; gap: 1.4rem 2.2rem; margin-top: 2rem; padding-top: 1.6rem; border-top: 1px solid var(--line); }
+  .dev-cred { display: flex; flex-direction: column; gap: .2rem; }
+  .dev-cred b { font-family: var(--f-display); font-weight: 400; font-size: 1.35rem; color: var(--ink); line-height: 1.05; }
+  .dev-cred small { font-size: .7rem; letter-spacing: .13em; text-transform: uppercase; color: var(--wood); }
+
+  .dev-figure { margin-top: clamp(2rem, 4vw, 3.4rem); position: relative; z-index: 1; }
+  .dev-figure img { width: 100%; height: auto; border-radius: var(--r); display: block; }
+
+  @media (max-width: 820px) {
+    .dev-grid { grid-template-columns: 1fr; gap: 1.8rem; }
+    .dev-head { position: static; }
+  }
+
+  .plan-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.2rem; margin-top: 2rem; }
+  .plan img, .prog img { width: 100%; height: auto; border-radius: 12px; display: block; }
+  .plan figcaption, .prog figcaption { margin-top: .6rem; font-size: .85rem; color: var(--ink-soft); }
+  .prog-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-top: 2rem; }
+
+  .trust-bar { display: flex; flex-wrap: wrap; gap: 1rem 2.4rem; align-items: center; justify-content: center; padding: 1.4rem 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .trust-item { font-size: .9rem; color: var(--ink); } .trust-item a { color: var(--wood); text-decoration: none; }
+  .ti-k { display:block; font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-soft); }
+  .trust-note { text-align:center; color:var(--ink-soft); font-size:.85rem; margin-top:1rem; }
+  .tst-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.4rem; margin-top:2.4rem; }
+  .tst { margin:0; background:#fff; border:1px solid var(--line); border-radius:14px; padding:1.6rem; }
+  .tst blockquote { margin:0 0 1rem; font-family:var(--f-display); font-size:1.15rem; line-height:1.5; color:var(--ink); }
+  .tst figcaption { font-size:.85rem; color:var(--ink-soft); }
+
+  .avail { display:inline-flex; align-items:center; gap:.5rem; margin-top:1.2rem; font-size:.9rem; color:var(--wood); font-weight:500; }
+  .avail-dot { width:8px; height:8px; border-radius:50%; background:var(--gold); box-shadow:0 0 0 4px rgba(190,143,91,.2); }
+</style>

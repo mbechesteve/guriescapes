@@ -171,7 +171,7 @@
                     <span class="td-name">{e.firstname} {e.lastname}</span>
                     <span class="td-email">{e.email}{#if e.phone} · {e.phone}{/if}</span>
                   </td>
-                  <td class="col-interest td-soft">{e.interest || '—'}</td>
+                  <td class="col-interest td-soft">{e.interest || (e.help && e.help[0]) || e.timeframe || '—'}</td>
                   <td class="col-source"><span class="tag source">{sourceLabel(e.source)}</span></td>
                   <td><span class="badge" style:background={statusColors[e.status].bg} style:color={statusColors[e.status].fg}>{e.status}</span></td>
                   <td class="col-next td-soft">{e.nextStep ? e.nextStep + (e.nextStepDate ? ` · ${e.nextStepDate}` : '') : '—'}</td>
@@ -219,6 +219,14 @@
             <span class="tag source">{sourceLabel(selected.source)}</span>
           </div>
 
+          {#if selected.help && selected.help.length}
+            <div class="d-block"><span class="d-label">How we can help</span>
+              <div class="d-tags">{#each selected.help as h}<span class="tag interest">{h}</span>{/each}</div>
+            </div>
+          {/if}
+          {#if selected.timeframe}
+            <div class="d-block"><span class="d-label">Timeframe</span><p>{selected.timeframe}</p></div>
+          {/if}
           {#if selected.message}
             <div class="d-block"><span class="d-label">Message</span><p>{selected.message}</p></div>
           {/if}

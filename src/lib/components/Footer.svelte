@@ -26,7 +26,9 @@
         <nav class="footer-links" aria-label="Contact">
           <a href={`mailto:${c.email || 'hello@guriescapes.com'}`}>{c.email || 'hello@guriescapes.com'}</a>
           <a href={`tel:${c.phone || ''}`}>{c.phone || '+255 ___ ___ ___'}</a>
-          <a href={wa}>WhatsApp · start chat</a>
+          {#if c.phoneTz}<a href={`tel:${c.phoneTz.replace(/\s/g, '')}`}>{c.phoneTz} · Call only</a>{/if}
+          {#if c.calendly}<a href={c.calendly} target="_blank" rel="noopener">Book a call ↗</a>{/if}
+          <a href={wa}>WhatsApp{c.whatsappNote ? ` · ${c.whatsappNote}` : ' · start chat'}</a>
           <a href="/#enquire">Enquire now</a>
         </nav>
         <div class="footer-social" style="margin-top:1.4rem">
@@ -34,11 +36,17 @@
           {#if c.facebook}<a href={c.facebook} aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 8h-2a2 2 0 0 0-2 2v12M8 13h6" /></svg></a>{/if}
         </div>
       </div>
+      <div>
+        <h4>Legal</h4>
+        <nav class="footer-links" aria-label="Legal">
+          <a href="/privacy">Privacy Policy</a>
+          <a href="/terms">Terms &amp; Conditions</a>
+        </nav>
+      </div>
     </div>
     <div class="footer-bottom">
       <span style="font-size:.85rem">© 2026 Guri Escapes Pongwe · www.guriescapes.com</span>
       <span style="font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)">Experience an escape</span>
     </div>
-    <p class="legal">This presentation is for informational and marketing purposes only and does not constitute a binding offer. Floor plans and unit sizes follow the architectural concept and may be subject to modification in final design. Yield, occupancy and appreciation figures are directional, drawn from RE/MAX Tanzania market reporting, and are not a guarantee of individual return.</p>
   </div>
 </footer>

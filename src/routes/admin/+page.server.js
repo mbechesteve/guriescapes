@@ -105,6 +105,8 @@ export async function load({ url }) {
       email: d.email || '',
       phone: d.phone || '',
       interest: d.interest || '',
+      help: Array.isArray(d.help) ? d.help : [],
+      timeframe: d.timeframe || '',
       message: d.message || '',
       source: d.source || '',
       status: STATUSES.includes(d.status) ? d.status : 'New',

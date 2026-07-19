@@ -18,7 +18,7 @@ export async function notifyAddress() {
 }
 
 /** Send an email via Resend. No-ops (logs) if RESEND_API_KEY isn't set. */
-export async function sendEmail({ to, subject, html, replyTo }) {
+export async function sendEmail({ to, subject, html, replyTo, attachments }) {
   if (!env.RESEND_API_KEY) {
     console.warn('Email skipped: RESEND_API_KEY not set.');
     return false;
@@ -36,7 +36,11 @@ export async function sendEmail({ to, subject, html, replyTo }) {
         authorization: `Bearer ${env.RESEND_API_KEY}`,
         'content-type': 'application/json'
       },
-      body: JSON.stringify({ from, to, subject, html, ...(replyTo ? { reply_to: replyTo } : {}) })
+      body: JSON.stringify({
+        from, to, subject, html,
+        ...(replyTo ? { reply_to: replyTo } : {}),
+        ...(attachments && attachments.length ? { attachments } : {})
+      })
     });
     if (!res.ok) {
       console.error('Resend error', res.status, await res.text().catch(() => ''));
@@ -77,12 +81,35 @@ export function newEnquiryEmail(lead, adminUrl) {
       ['Email', lead.email],
       ['Phone', lead.phone],
       ['Interested in', lead.interest],
+      ['How we can help', Array.isArray(lead.help) ? lead.help.join(', ') : lead.help],
+      ['Timeframe', lead.timeframe],
       ['Source', lead.source],
       ['Message', lead.message]
     ],
     adminUrl,
     'Guri Escapes Pongwe — you can reply directly to this email to reach the lead.'
   );
+}
+
+/** Sent to the enquirer when they request the brochure (attached if we have a stored PDF). */
+export function brochureEmail(lead, hasPdf, contact = {}) {
+  const name = esc(lead.firstname || 'there');
+  const lead_in = hasPdf
+    ? 'Your Guri Escapes Pongwe brochure and price list are attached to this email.'
+    : "Thanks for your interest — we're preparing the latest brochure and price list and will email it to you very shortly.";
+  const wa = contact.whatsapp ? `https://wa.me/${esc(contact.whatsapp)}` : '';
+  return `<div style="background:#FCF8EF;padding:24px;font-family:Arial,Helvetica,sans-serif">
+  <div style="max-width:560px;margin:0 auto;background:#fff;border:1px solid #e7e0d3;border-radius:14px;overflow:hidden">
+    <div style="background:#363a17;color:#FCF8EF;padding:18px 22px;font-size:18px;font-weight:600">Guri Escapes Pongwe</div>
+    <div style="padding:22px;color:#2b2e18;font-size:15px;line-height:1.6">
+      <p>Hi ${name},</p>
+      <p>${lead_in}</p>
+      <p>Two design-led private pool villas on Zanzibar's calm east coast — fully managed for hands-off rental income, from USD 90,000.</p>
+      ${contact.email ? `<p>Questions? Reply to this email${wa ? ` or message us on <a href="${wa}" style="color:#BE8F5B">WhatsApp</a>` : ''}.</p>` : ''}
+      <p style="margin-top:22px;color:#5a5c45">— The Guri Escapes team</p>
+    </div>
+  </div>
+</div>`;
 }
 
 export function leadUpdateEmail(lead, adminUrl) {
