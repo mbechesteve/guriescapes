@@ -20,7 +20,7 @@ export const defaultSiteContent = {
     heading: 'Built by Guri Build Zanzibar.',
     since: '2 years',
     body: [
-      'Guri Build Zanzibar is the development company behind Guri Escapes Pongwe—a collection of private pool villas designed for island living and managed rental income.',
+      'Guri Build Zanzibar is the development company behind Guri Escapes Pongwe, a collection of private pool villas designed for island living and managed rental income.',
       'Building on the project-delivery experience of Guri Build Kenya, we manage the full development journey: land, design, approvals, construction, buyer reporting and handover. After completion, Guri Escapes manages reservations, guests, maintenance and owner returns.',
       'Our first two-bedroom villas in Pongwe are now available from USD 90,000.'
     ],
