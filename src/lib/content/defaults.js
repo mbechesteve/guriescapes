@@ -13,19 +13,40 @@ export const defaultSiteContent = {
     { num: 'USD 90k', label: 'Starting price', cap: 'Per villa, leasehold' },
     { num: '15–18%', label: 'Target gross yield', cap: 'Short-stay, depending on unit & season' },
     { num: '20%', label: 'Down payment', cap: 'Tailored milestone payment plans' },
-    { num: '30–40%', label: 'Capital appreciation', cap: 'Projected land growth to 2026*' }
+    { num: '30–40%', label: 'Capital appreciation', cap: 'Projected land growth to 2027*' }
   ],
+  developer: {
+    eyebrow: 'About the developer',
+    heading: 'Built by Guri Build Zanzibar.',
+    since: '2 years',
+    body: [
+      'Guri Build Zanzibar is the development company behind Guri Escapes Pongwe—a collection of private pool villas designed for island living and managed rental income.',
+      'Building on the project-delivery experience of Guri Build Kenya, we manage the full development journey: land, design, approvals, construction, buyer reporting and handover. After completion, Guri Escapes manages reservations, guests, maintenance and owner returns.',
+      'Our first two-bedroom villas in Pongwe are now available from USD 90,000.'
+    ],
+    image: ''
+  },
+  testimonials: [],
+  trustBar: { zipa: '', remaxReportUrl: '', note: '', press: [] },
+  renders: [],
+  floorPlans: [],
+  progress: [],
+  availability: { reserved: '', total: '', note: '' },
+  brochure: { fileUrl: '', name: '', uploadedAt: null },
   contact: {
     email: 'hello@guriescapes.com',
     phone: '+1 641 955 3743',
+    phoneTz: '+255 799 109621',
     whatsapp: '16419553743',
+    whatsappNote: 'International line — WhatsApp only',
+    calendly: '',
     instagram: 'https://instagram.com/guriescapes',
     facebook: 'https://facebook.com/guriescapes'
   },
   faq: [
     {
       q: 'Can international buyers own property in Zanzibar?',
-      a: 'Yes. Foreign buyers hold a long leasehold, up to 99 years, broken down to 33 years renewable, most straightforwardly inside government-approved (ZIPA) developments. A qualifying purchase (from USD 100,000) can also support an investment residence permit. We provide full legal and visa guidance for a smooth, compliant process.'
+      a: 'Yes. Foreign buyers hold a long leasehold — up to 99 years (33-year renewable terms) — most straightforwardly inside government-approved (ZIPA) developments. A single villa at USD 90,000 is a leasehold purchase; the investment residence permit is a separate, optional route that requires a total qualifying investment from USD 100,000, which buyers typically reach by taking both villas or an upgraded, furnished package. We provide full legal and visa guidance for a smooth, compliant process.'
     },
     {
       q: 'Is the villa managed for me?',
@@ -33,7 +54,7 @@ export const defaultSiteContent = {
     },
     {
       q: 'How does tourism support returns in Pongwe?',
-      a: "Zanzibar's visitor numbers are climbing toward 1 million arrivals by 2026. Pongwe's calm, design-led east coast is exactly what today's premium traveller seeks, driving strong, year-round short-stay demand for private pool villas."
+      a: "Zanzibar's visitor numbers are climbing past 1 million arrivals, with growth projected through 2027. Pongwe's calm, design-led east coast is exactly what today's premium traveller seeks, driving strong, year-round short-stay demand for private pool villas."
     },
     {
       q: 'Does Pongwe offer long-term growth?',
@@ -42,6 +63,10 @@ export const defaultSiteContent = {
     {
       q: 'How are my payments protected?',
       a: 'We structure purchases with the safeguards serious investors expect: independent legal and quantity-surveyor representation, segregated escrow, milestone-based payments and a foundations-first rule. Your advisors stay independent of the seller.'
+    },
+    {
+      q: 'Can I resell or exit my investment later?',
+      a: 'Yes. Villas are transferable, and when you decide to exit we can help you sell or offload your investment to our ready pool of buyers — the same audience already drawn to Pongwe. As the managing operator we can market your villa with a proven income record, which supports resale value and liquidity.'
     }
   ]
 };
@@ -114,3 +139,39 @@ export const defaultVillas = [
     ]
   }
 ];
+
+// One-time, non-destructive migration for already-seeded databases.
+// additions: new fields, added only if absent. corrections: applied only if the
+// stored value still equals oldValue (i.e. the field was never hand-edited).
+export const MIGRATION = {
+  additions: {
+    'developer': defaultSiteContent.developer,
+    'testimonials': [],
+    'trustBar': { zipa: '', remaxReportUrl: '', note: '', press: [] },
+    'renders': [],
+    'floorPlans': [],
+    'progress': [],
+    'availability': { reserved: '', total: '', note: '' },
+    'brochure': { fileUrl: '', name: '', uploadedAt: null },
+    'contact.phoneTz': '+255 799 109621',
+    'contact.whatsappNote': 'International line — WhatsApp only',
+    'contact.calendly': ''
+  },
+  corrections: [
+    {
+      path: 'metrics.3.cap',
+      oldValue: 'Projected land growth to 2026*',
+      newValue: 'Projected land growth to 2027*'
+    },
+    {
+      path: 'faq.0.a',
+      oldValue: 'Yes. Foreign buyers hold a long leasehold, up to 99 years, broken down to 33 years renewable, most straightforwardly inside government-approved (ZIPA) developments. A qualifying purchase (from USD 100,000) can also support an investment residence permit. We provide full legal and visa guidance for a smooth, compliant process.',
+      newValue: 'Yes. Foreign buyers hold a long leasehold — up to 99 years (33-year renewable terms) — most straightforwardly inside government-approved (ZIPA) developments. A single villa at USD 90,000 is a leasehold purchase; the investment residence permit is a separate, optional route that requires a total qualifying investment from USD 100,000, which buyers typically reach by taking both villas or an upgraded, furnished package. We provide full legal and visa guidance for a smooth, compliant process.'
+    },
+    {
+      path: 'faq.2.a',
+      oldValue: "Zanzibar's visitor numbers are climbing toward 1 million arrivals by 2026. Pongwe's calm, design-led east coast is exactly what today's premium traveller seeks, driving strong, year-round short-stay demand for private pool villas.",
+      newValue: "Zanzibar's visitor numbers are climbing past 1 million arrivals, with growth projected through 2027. Pongwe's calm, design-led east coast is exactly what today's premium traveller seeks, driving strong, year-round short-stay demand for private pool villas."
+    }
+  ]
+};
