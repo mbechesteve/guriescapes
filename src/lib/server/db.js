@@ -56,6 +56,11 @@ export async function images() {
   return db.collection('images');
 }
 
+export async function documents() {
+  const db = await getDb();
+  return db.collection('documents');
+}
+
 let villasIndexed = false;
 export async function villas() {
   const db = await getDb();
