@@ -17,5 +17,4 @@
   <p>You can ask us to access, correct or delete your information at any time by emailing us. To stop hearing from us, reply to any message and ask to be removed.</p>
   <h2>Contact</h2>
   <p>Guri Build Zanzibar Ltd — email <a href="mailto:hello@guriescapes.com">hello@guriescapes.com</a>.</p>
-  <p class="legal-fine">This template is provided for information and should be reviewed by qualified counsel before publication.</p>
 </div></section>

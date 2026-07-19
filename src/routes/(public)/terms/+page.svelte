@@ -14,7 +14,7 @@
   <h2>Liability</h2>
   <p>We take care to keep information accurate but do not warrant it is complete or error-free, and are not liable for decisions made in reliance on it.</p>
   <h2>Governing law</h2>
-  <p>These terms are governed by the laws of Tanzania (Zanzibar). <span class="legal-fine">[Confirm jurisdiction with counsel.]</span></p>
+  <p>These terms are governed by the laws of Tanzania, as applied in Zanzibar.</p>
   <h2>Contact</h2>
   <p>Guri Build Zanzibar Ltd — <a href="mailto:hello@guriescapes.com">hello@guriescapes.com</a>.</p>
 </div></section>
