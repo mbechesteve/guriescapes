@@ -35,18 +35,16 @@ export async function ensureSeeded() {
       // Existing DB: additive + conditional, never destructive.
       const patch = computeSiteMigration(existing, MIGRATION.additions, MIGRATION.corrections);
       if (patch) await sc.updateOne({ _id: 'site' }, patch);
-      // Append resale FAQ once, only if absent.
-      const hasResale = Array.isArray(existing.faq) &&
-        existing.faq.some((f) => /resell|resale|exit/i.test(f?.q || ''));
-      if (!hasResale) {
-        await sc.updateOne(
-          { _id: 'site' },
-          { $push: { faq: {
-            q: 'Can I resell or exit my investment later?',
-            a: 'Yes. Villas are transferable, and when you decide to exit we can help you sell or offload your investment to our ready pool of buyers — the same audience already drawn to Pongwe. As the managing operator we can market your villa with a proven income record, which supports resale value and liquidity.'
-          } } }
-        );
-      }
+      // Append resale FAQ once, only if absent. Atomic self-guarding filter:
+      // the update only matches when no resale FAQ exists yet, so concurrent
+      // serverless cold starts can push at most one entry, never duplicates.
+      await sc.updateOne(
+        { _id: 'site', faq: { $not: { $elemMatch: { q: { $regex: /resell|resale|exit/i } } } } },
+        { $push: { faq: {
+          q: 'Can I resell or exit my investment later?',
+          a: 'Yes. Villas are transferable, and when you decide to exit we can help you sell or offload your investment to our ready pool of buyers — the same audience already drawn to Pongwe. As the managing operator we can market your villa with a proven income record, which supports resale value and liquidity.'
+        } } }
+      );
     }
 
     // Villas: insert missing default villas only; NEVER overwrite existing docs.
