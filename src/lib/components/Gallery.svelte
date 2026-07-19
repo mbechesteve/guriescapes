@@ -54,7 +54,7 @@
 <div class="gallery">
   {#each images as img, i}
     <a href={img.src} class:wide={img.wide} on:click|preventDefault={() => open(i)}>
-      <img src={img.src} alt={img.alt} />
+      <img src={img.src} alt={img.alt} loading="lazy" decoding="async" />
       <span class="zoom">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7" /><path d="M21 21l-4-4M11 8v6M8 11h6" /></svg>
       </span>
@@ -81,7 +81,7 @@
     <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" /></svg>
   </button>
   <div class="lb-stage" on:click|self={close}>
-    <img class="lb-img" src={item.src} alt={item.alt} />
+    <img class="lb-img" src={item.src} alt={item.alt} loading="lazy" decoding="async" />
   </div>
   <div class="lb-bar">
     {#if item.alt}<span class="lb-caption">{item.alt}</span>{/if}

@@ -19,7 +19,7 @@
 </svelte:head>
 
 <section class="page-hero">
-  <img class="ph-bg" src={v.heroImage} alt={v.name} />
+  <img class="ph-bg" src={v.heroImage} alt={v.name} fetchpriority="high" />
   <div class="wrap ph-inner">
     <p class="crumb"><a href="/">Home</a> / <a href="/#villas">Villas</a> / {v.name}</p>
     <h1>{v.name}</h1>
@@ -43,7 +43,7 @@
       <a href="#enquire" class="btn btn-primary" style="margin-top:.6rem">Enquire about {v.name.split(' — ')[0]} <span class="arrow">→</span></a>
     </div>
     <div class="split-media reveal" data-d="1">
-      <img src={splitImage} alt={v.name} />
+      <img src={splitImage} alt={v.name} loading="lazy" decoding="async" />
       <span class="tag">Pool terrace</span>
     </div>
   </div>

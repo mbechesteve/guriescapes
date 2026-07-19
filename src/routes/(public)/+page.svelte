@@ -33,8 +33,8 @@
 
 <!-- 01 · HERO -->
 <section class="hero" id="top">
-  <div class="hero-bg"><img src="/assets/img/hero.jpg" alt="A villa interior opening onto golden-hour island light" /></div>
-  <img class="hero-frond" src="/assets/img/frond.svg" alt="" aria-hidden="true" />
+  <div class="hero-bg"><img src="/assets/img/hero.jpg" alt="A villa interior opening onto golden-hour island light" fetchpriority="high" /></div>
+  <img class="hero-frond" src="/assets/img/frond.svg" alt="" aria-hidden="true" loading="lazy" decoding="async" />
   <div class="wrap hero-inner">
     <p class="eyebrow" style="color:var(--cream)">{hero.eyebrow}</p>
     <h1 class="reveal in">{hero.headline}</h1>
@@ -61,7 +61,7 @@
       <a href="#enquire" class="btn btn-ghost" style="margin-top:.8rem">Enquire now <span class="arrow">→</span></a>
     </div>
     <div class="split-media reveal" data-d="1">
-      <img src="/assets/img/lifestyle-hammock.jpg" alt="A hammock strung between palms in dappled island light" />
+      <img src="/assets/img/lifestyle-hammock.jpg" alt="A hammock strung between palms in dappled island light" loading="lazy" decoding="async" />
       <span class="tag">Pongwe · slow mornings</span>
     </div>
   </div>
@@ -69,7 +69,7 @@
 
 <!-- 03 · KEY NUMBERS -->
 <section class="metrics" aria-label="The numbers at a glance">
-  <img class="frond-wm" src="/assets/img/frond.svg" alt="" aria-hidden="true" />
+  <img class="frond-wm" src="/assets/img/frond.svg" alt="" aria-hidden="true" loading="lazy" decoding="async" />
   <div class="wrap" style="padding-top:clamp(56px,7vw,90px);padding-bottom:1.4rem">
     <p class="eyebrow center reveal" style="display:flex;justify-content:center">The numbers, at a glance</p>
   </div>
@@ -97,7 +97,7 @@
     <div class="villa-grid">
       {#each villas as v, i}
         <a class="villa-card reveal" href="/{v.slug}" data-d={i + 1}>
-          <img src={v.cardImage} alt={v.name} />
+          <img src={v.cardImage} alt={v.name} loading="lazy" decoding="async" />
           <div class="vc-body">
             <h3>{v.name}</h3>
             <p class="vc-meta">{v.plotM2} m² plot · {v.builtUpM2} m² built-up · {v.bedrooms} bedrooms</p>
@@ -160,7 +160,7 @@
 
 <!-- 06 · WHY INVEST -->
 <section class="invest section-pad" id="invest">
-  <div class="invest-bg"><img src="/assets/img/beach-palm.jpg" alt="" /></div>
+  <div class="invest-bg"><img src="/assets/img/beach-palm.jpg" alt="" aria-hidden="true" loading="lazy" decoding="async" /></div>
   <div class="wrap">
     <div class="reveal" style="max-width:680px">
       <p class="eyebrow">Why invest in Pongwe, Zanzibar</p>
@@ -180,7 +180,7 @@
 <section class="section-pad" id="inside">
   <div class="wrap split flip">
     <div class="split-media reveal">
-      <img src="/assets/img/interior-lamp.jpg" alt="Open-plan living and dining beneath woven pendant lights" />
+      <img src="/assets/img/interior-lamp.jpg" alt="Open-plan living and dining beneath woven pendant lights" loading="lazy" decoding="async" />
       <span class="tag">Open-plan living · 42 m²</span>
     </div>
     <div class="reveal" data-d="1">
@@ -317,7 +317,7 @@
 
 <!-- 09 · CLOSING CTA -->
 <section class="closing section-pad" id="brochure">
-  <div class="closing-bg"><img src="/assets/img/pool.jpg" alt="" /></div>
+  <div class="closing-bg"><img src="/assets/img/pool.jpg" alt="" aria-hidden="true" loading="lazy" decoding="async" /></div>
   <div class="wrap reveal">
     <p class="eyebrow center" style="justify-content:center">Experience an escape</p>
     <h2>Discover your next Zanzibar investment.</h2>
