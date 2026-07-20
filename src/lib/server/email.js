@@ -112,6 +112,26 @@ export function brochureEmail(lead, hasPdf, contact = {}) {
 </div>`;
 }
 
+/** Auto-reply to every enquirer: confirms receipt and promises the PDF shortly. */
+export function enquiryAckEmail(lead, contact = {}) {
+  const name = esc(lead.firstname || 'there');
+  const wa = contact.whatsapp ? `https://wa.me/${esc(contact.whatsapp)}` : '';
+  const cal = contact.calendly ? esc(contact.calendly) : '';
+  return `<div style="background:#FCF8EF;padding:24px;font-family:Arial,Helvetica,sans-serif">
+  <div style="max-width:560px;margin:0 auto;background:#fff;border:1px solid #e7e0d3;border-radius:14px;overflow:hidden">
+    <div style="background:#363a17;color:#FCF8EF;padding:18px 22px;font-size:18px;font-weight:600">Guri Escapes Pongwe</div>
+    <div style="padding:22px;color:#2b2e18;font-size:15px;line-height:1.6">
+      <p>Hi ${name},</p>
+      <p>Thank you for your interest in Guri Escapes Pongwe. We've received your details and a member of our team will email you the full brochure and price list (PDF) shortly.</p>
+      <p>In the meantime: two design-led private pool villas on Zanzibar's calm east coast, fully managed for hands-off rental income, from USD 90,000.</p>
+      ${cal ? `<p>Prefer to talk it through? <a href="${cal}" style="color:#BE8F5B">Book a free discovery call</a>${wa ? ` — or message us on <a href="${wa}" style="color:#BE8F5B">WhatsApp</a>` : ''}.</p>`
+             : (wa ? `<p>Questions? Reply to this email or message us on <a href="${wa}" style="color:#BE8F5B">WhatsApp</a>.</p>` : '')}
+      <p style="margin-top:22px;color:#5a5c45">— The Guri Escapes team</p>
+    </div>
+  </div>
+</div>`;
+}
+
 export function leadUpdateEmail(lead, adminUrl) {
   return shell(
     'Lead updated',

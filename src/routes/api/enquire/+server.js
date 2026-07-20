@@ -1,6 +1,6 @@
 import { json, error } from '@sveltejs/kit';
 import { enquiries, documents } from '$lib/server/db';
-import { sendEmail, notifyAddress, newEnquiryEmail, brochureEmail } from '$lib/server/email';
+import { sendEmail, notifyAddress, newEnquiryEmail, brochureEmail, enquiryAckEmail } from '$lib/server/email';
 import { getSiteContent } from '$lib/server/content';
 import { ObjectId } from 'mongodb';
 
@@ -70,35 +70,41 @@ export async function POST({ request, url }) {
     console.error('Enquiry notification failed:', e);
   }
 
-  // Brochure to the enquirer (best-effort).
+  // Auto-reply to every enquirer (best-effort). If a brochure PDF is stored we
+  // attach it straight away; otherwise we confirm receipt and promise it shortly.
   try {
-    const wantsBrochure = doc.source === 'brochure' ||
-      doc.help.some((h) => /brochure/i.test(h)) || /brochure/i.test(doc.interest);
-    if (wantsBrochure) {
-      const site = await getSiteContent();
-      const b = site?.brochure || {};
-      let attachments;
-      if (b.fileUrl) {
-        const m = /\/api\/doc\/([a-f0-9]{24})/.exec(b.fileUrl);
-        if (m) {
-          const col = await documents();
-          const fileDoc = await col.findOne({ _id: new ObjectId(m[1]) });
-          if (fileDoc?.data) {
-            const bin = fileDoc.data;
-            const bytes = bin && bin.buffer ? Buffer.from(bin.buffer) : Buffer.from(bin);
-            attachments = [{ filename: fileDoc.name || 'Guri-Escapes-Pongwe.pdf', content: bytes.toString('base64') }];
-          }
+    const site = await getSiteContent();
+    const contact = site?.contact || {};
+    const b = site?.brochure || {};
+    let attachments;
+    if (b.fileUrl) {
+      const m = /\/api\/doc\/([a-f0-9]{24})/.exec(b.fileUrl);
+      if (m) {
+        const col = await documents();
+        const fileDoc = await col.findOne({ _id: new ObjectId(m[1]) });
+        if (fileDoc?.data) {
+          const bin = fileDoc.data;
+          const bytes = bin && bin.buffer ? Buffer.from(bin.buffer) : Buffer.from(bin);
+          attachments = [{ filename: fileDoc.name || 'Guri-Escapes-Pongwe.pdf', content: bytes.toString('base64') }];
         }
       }
+    }
+    if (attachments) {
       await sendEmail({
         to: doc.email,
         subject: 'Your Guri Escapes Pongwe brochure',
-        html: brochureEmail(doc, !!attachments, site?.contact || {}),
+        html: brochureEmail(doc, true, contact),
         attachments
+      });
+    } else {
+      await sendEmail({
+        to: doc.email,
+        subject: "We've received your enquiry — your Pongwe brochure is on its way",
+        html: enquiryAckEmail(doc, contact)
       });
     }
   } catch (e) {
-    console.error('Brochure email failed:', e);
+    console.error('Enquirer auto-reply failed:', e);
   }
 
   return json({ ok: true });
