@@ -39,7 +39,7 @@ export const defaultSiteContent = {
     phoneTz: '+255 799 109621',
     whatsapp: '16419553743',
     whatsappNote: 'International line — WhatsApp only',
-    calendly: '',
+    calendly: 'https://calendly.com/guriescapes-sales/discovery-call',
     instagram: 'https://instagram.com/guriescapes',
     facebook: 'https://facebook.com/guriescapes'
   },
@@ -155,9 +155,14 @@ export const MIGRATION = {
     'brochure': { fileUrl: '', name: '', uploadedAt: null },
     'contact.phoneTz': '+255 799 109621',
     'contact.whatsappNote': 'International line — WhatsApp only',
-    'contact.calendly': ''
+    'contact.calendly': 'https://calendly.com/guriescapes-sales/discovery-call'
   },
   corrections: [
+    {
+      path: 'contact.calendly',
+      oldValue: '',
+      newValue: 'https://calendly.com/guriescapes-sales/discovery-call'
+    },
     {
       path: 'metrics.3.cap',
       oldValue: 'Projected land growth to 2026*',
