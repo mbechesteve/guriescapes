@@ -28,8 +28,23 @@ export const defaultSiteContent = {
   },
   testimonials: [],
   trustBar: { zipa: '', remaxReportUrl: '', note: '', press: [] },
-  renders: [],
-  floorPlans: [],
+  renders: [
+    { src: '/assets/img/render-aerial.jpg', alt: 'Aerial view of the villa, pool terrace and walled gardens', wide: true },
+    { src: '/assets/img/render-pool.jpg', alt: 'Private pool and sun-deck terrace framed by the villa' },
+    { src: '/assets/img/render-firepit.jpg', alt: 'Sunken garden fire pit with the villa and pool beyond' },
+    { src: '/assets/img/render-parking.jpg', alt: 'Landscaped garden approach from the parking court' },
+    { src: '/assets/img/render-living.jpg', alt: 'Open-plan living room with woven textures and island craft' },
+    { src: '/assets/img/render-living-seat.jpg', alt: 'Living room framed by sheer curtains, opening to the pool' },
+    { src: '/assets/img/render-bathroom-shower.jpg', alt: 'En-suite bathroom leading to a private outdoor shower garden' },
+    { src: '/assets/img/render-vessel-sink.jpg', alt: 'Vessel sink and warm timber vanity in the second bathroom' },
+    { src: '/assets/img/render-roof-palm.jpg', alt: 'Makuti-thatched roof against the palms and island sky' },
+    { src: '/assets/img/render-hammock.jpg', alt: 'A hammock strung in the villa gardens beneath the palms' }
+  ],
+  floorPlans: [
+    { src: '/assets/img/site-plan.jpg', alt: 'Site plan of Villa A and Villa B', caption: 'Site plan — the two villas, each on its own walled plot' },
+    { src: '/assets/img/villa-a-overview.jpg', alt: 'Villa A layout overview', caption: 'Villa A — layout: living, kitchen, pool, two bedrooms and gardens' },
+    { src: '/assets/img/villa-a-floorplan.jpg', alt: 'Villa A floor plan', caption: 'Villa A floor plan (Villa B is mirrored)' }
+  ],
   progress: [],
   availability: { reserved: '', total: '', note: '' },
   brochure: { fileUrl: '', name: '', uploadedAt: null },
@@ -162,6 +177,16 @@ export const MIGRATION = {
       path: 'contact.calendly',
       oldValue: '',
       newValue: 'https://calendly.com/guriescapes-sales/discovery-call'
+    },
+    {
+      path: 'renders',
+      oldValue: [],
+      newValue: defaultSiteContent.renders
+    },
+    {
+      path: 'floorPlans',
+      oldValue: [],
+      newValue: defaultSiteContent.floorPlans
     },
     {
       path: 'metrics.3.cap',
