@@ -2,6 +2,7 @@
   import { brochureIntent } from '$lib/stores/enquiry';
   import { onMount, onDestroy } from 'svelte';
   import 'intl-tel-input/dist/css/intlTelInput.css';
+  import { countryNames } from '$lib/data/countryNames';
 
   export let source = 'home';
   export let preselectHelp = []; // help options to pre-check (e.g. compare villas)
@@ -36,7 +37,11 @@
     iti = intlTelInput(phoneEl, {
       initialCountry: 'tz',
       separateDialCode: true,
-      countrySearch: true
+      countrySearch: true,
+      // Bundle English country names instead of relying on the browser's
+      // Intl.DisplayNames, which returns empty region data on some Linux
+      // builds — that left the list blank and search showing "No results found".
+      uiTranslations: { countryNames }
     });
   });
   onDestroy(() => iti?.destroy());
