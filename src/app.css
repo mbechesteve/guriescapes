@@ -344,7 +344,7 @@ body.nav-open .site-header.scrolled{
 .site-footer{background:var(--sage-deep);color:rgba(252,248,239,.78);padding-block:clamp(56px,7vw,84px) 32px}
 .footer-top{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:clamp(2rem,5vw,4rem)}
 .footer-logo{height:64px;margin-bottom:1.4rem}
-.site-footer h4{font-family:var(--f-body);font-weight:500;font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem}
+.site-footer h3{font-family:var(--f-body);font-weight:500;font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem}
 .site-footer .f-blurb{max-width:42ch;font-size:.98rem;line-height:1.65}
 .footer-links{display:flex;flex-direction:column;gap:.7rem;font-size:.95rem}
 .footer-links a:hover{color:var(--cream)}

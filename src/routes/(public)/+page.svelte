@@ -85,7 +85,7 @@
         <div class="metric"><span class="num">{m.num}</span><span class="label">{m.label}</span><span class="cap">{m.cap}</span></div>
       {/each}
     </div>
-    <p style="text-align:center;margin:2rem 0 0;font-size:.78rem;color:rgba(252,248,239,.55);letter-spacing:.04em">*Depending on unit type &amp; market conditions. Source: RE/MAX Tanzania Insider Report 2025/6.</p>
+    <p style="text-align:center;margin:2rem 0 0;font-size:.78rem;color:rgba(252,248,239,.82);letter-spacing:.04em">*Depending on unit type &amp; market conditions. Source: RE/MAX Tanzania Insider Report 2025/6.</p>
   </div>
 </section>
 

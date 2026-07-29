@@ -12,7 +12,7 @@
         <p class="f-blurb">Design-led pool villas on Zanzibar's east coast. Built for calm, owned for income; tropical living with serious ROI potential.</p>
       </div>
       <div>
-        <h4>Explore</h4>
+        <h3>Explore</h3>
         <nav class="footer-links" aria-label="Footer">
           <a href="/#story">The lifestyle</a>
           <a href="/#villas">The villas</a>
@@ -22,7 +22,7 @@
         </nav>
       </div>
       <div>
-        <h4>Get in touch</h4>
+        <h3>Get in touch</h3>
         <nav class="footer-links" aria-label="Contact">
           <a href={`mailto:${c.email || 'hello@guriescapes.com'}`}>{c.email || 'hello@guriescapes.com'}</a>
           <a href={`tel:${c.phone || ''}`}>{c.phone || '+255 ___ ___ ___'}</a>
@@ -37,7 +37,7 @@
         </div>
       </div>
       <div>
-        <h4>Legal</h4>
+        <h3>Legal</h3>
         <nav class="footer-links" aria-label="Legal">
           <a href="/privacy">Privacy Policy</a>
           <a href="/terms">Terms &amp; Conditions</a>

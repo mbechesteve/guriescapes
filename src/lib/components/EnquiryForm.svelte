@@ -1,7 +1,6 @@
 <script>
   import { brochureIntent } from '$lib/stores/enquiry';
   import { onMount, onDestroy } from 'svelte';
-  import 'intl-tel-input/dist/css/intlTelInput.css';
   import { countryNames } from '$lib/data/countryNames';
 
   export let source = 'home';
@@ -32,8 +31,17 @@
   let phoneEl; // the <input> the widget enhances
   let iti; // the intl-tel-input instance (client only)
 
-  onMount(async () => {
-    const { default: intlTelInput } = await import('intl-tel-input/intlTelInputWithUtils');
+  // The widget (plus utils) is ~320KB, so don't let it compete with the
+  // initial page load — fetch it when the form first approaches the viewport
+  // (or on focus, whichever comes first).
+  let itiLoading = false;
+  async function ensureIti() {
+    if (iti || itiLoading || !phoneEl) return;
+    itiLoading = true;
+    const [{ default: intlTelInput }] = await Promise.all([
+      import('intl-tel-input/intlTelInputWithUtils'),
+      import('intl-tel-input/dist/css/intlTelInput.css')
+    ]);
     iti = intlTelInput(phoneEl, {
       initialCountry: 'tz',
       separateDialCode: true,
@@ -43,6 +51,21 @@
       // builds — that left the list blank and search showing "No results found".
       uiTranslations: { countryNames }
     });
+  }
+
+  onMount(() => {
+    if (!('IntersectionObserver' in window)) { ensureIti(); return; }
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          ensureIti();
+          io.disconnect();
+        }
+      },
+      { rootMargin: '400px' }
+    );
+    io.observe(form);
+    return () => io.disconnect();
   });
   onDestroy(() => iti?.destroy());
 
@@ -115,7 +138,7 @@
   <div class="field full"><label for="em">Email</label><input id="em" type="email" name="email" required placeholder="you@email.com" /></div>
   <div class="field full">
     <label for="ph">Phone number</label>
-    <input id="ph" name="phone_national" type="tel" bind:this={phoneEl} placeholder="Enter phone number" autocomplete="tel" />
+    <input id="ph" name="phone_national" type="tel" bind:this={phoneEl} on:focus={ensureIti} placeholder="Enter phone number" autocomplete="tel" />
   </div>
   <div class="field full">
     <label id="help-label" for="help-btn">How can we help?</label>
