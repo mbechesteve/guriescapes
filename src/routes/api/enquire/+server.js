@@ -1,8 +1,10 @@
 import { json, error } from '@sveltejs/kit';
+import { read } from '$app/server';
 import { enquiries, documents } from '$lib/server/db';
 import { sendEmail, notifyAddress, newEnquiryEmail, brochureEmail, enquiryAckEmail } from '$lib/server/email';
 import { getSiteContent } from '$lib/server/content';
 import { ObjectId } from 'mongodb';
+import bundledBrochure from '$lib/assets/brochure.pdf';
 
 const str = (v, max) => String(v ?? '').trim().slice(0, max);
 
@@ -70,29 +72,36 @@ export async function POST({ request, url }) {
     console.error('Enquiry notification failed:', e);
   }
 
-  // Auto-reply to every enquirer (best-effort). If a brochure PDF is stored we
-  // attach it straight away; otherwise we confirm receipt and promise it shortly.
+  // Auto-reply to every enquirer (best-effort). An admin-uploaded brochure in
+  // the DB wins; otherwise we attach the brochure bundled with the app. Only
+  // if both fail do we fall back to a receipt-confirmation without the PDF.
   try {
     const site = await getSiteContent();
     const contact = site?.contact || {};
-    const b = site?.brochure || {};
     let attachments;
-    if (b.fileUrl) {
-      const m = /\/api\/doc\/([a-f0-9]{24})/.exec(b.fileUrl);
+    try {
+      const b = site?.brochure || {};
+      const m = b.fileUrl ? /\/api\/doc\/([a-f0-9]{24})/.exec(b.fileUrl) : null;
       if (m) {
         const col = await documents();
         const fileDoc = await col.findOne({ _id: new ObjectId(m[1]) });
         if (fileDoc?.data) {
           const bin = fileDoc.data;
           const bytes = bin && bin.buffer ? Buffer.from(bin.buffer) : Buffer.from(bin);
-          attachments = [{ filename: fileDoc.name || 'Guri-Escapes-Pongwe.pdf', content: bytes.toString('base64') }];
+          attachments = [{ filename: fileDoc.name || 'Pongwe Villas - Guri Escapes Brochure.pdf', content: bytes.toString('base64') }];
         }
       }
+      if (!attachments) {
+        const bytes = Buffer.from(await read(bundledBrochure).arrayBuffer());
+        attachments = [{ filename: 'Pongwe Villas - Guri Escapes Brochure.pdf', content: bytes.toString('base64') }];
+      }
+    } catch (e) {
+      console.error('Brochure attachment failed:', e);
     }
     if (attachments) {
       await sendEmail({
         to: doc.email,
-        subject: 'Your Guri Escapes Pongwe brochure',
+        subject: 'Thank you for your interest in Pongwe Villas',
         html: brochureEmail(doc, true, contact),
         attachments
       });
