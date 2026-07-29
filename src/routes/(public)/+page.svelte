@@ -1,8 +1,14 @@
 <script>
   import EnquiryForm from '$lib/components/EnquiryForm.svelte';
   import Gallery from '$lib/components/Gallery.svelte';
+  import Pic from '$lib/components/Pic.svelte';
   import { brochureIntent } from '$lib/stores/enquiry';
   import { orgLd, faqLd, ldScript } from '$lib/seo';
+  import heroPic from '$lib/assets/img/hero.jpg?w=480;768;1080;1500&format=avif;webp;jpg&as=picture';
+  import hammockPic from '$lib/assets/img/lifestyle-hammock.jpg?w=480;768;1250&format=avif;webp;jpg&as=picture';
+  import beachPalmPic from '$lib/assets/img/beach-palm.jpg?format=avif;webp;jpg&as=picture';
+  import interiorLampPic from '$lib/assets/img/interior-lamp.jpg?w=480;768;1150&format=avif;webp;jpg&as=picture';
+  import poolPic from '$lib/assets/img/pool.jpg?format=avif;webp;jpg&as=picture';
   export let data;
 
   $: hero = data.site.hero;
@@ -33,7 +39,7 @@
 
 <!-- 01 · HERO -->
 <section class="hero" id="top">
-  <div class="hero-bg"><img src="/assets/img/hero.jpg" alt="A villa interior opening onto golden-hour island light" fetchpriority="high" /></div>
+  <div class="hero-bg"><Pic picture={heroPic} alt="A villa interior opening onto golden-hour island light" sizes="100vw" loading="eager" fetchpriority="high" /></div>
   <img class="hero-frond" src="/assets/img/frond.svg" alt="" aria-hidden="true" loading="lazy" decoding="async" />
   <div class="wrap hero-inner">
     <p class="eyebrow" style="color:var(--cream)">{hero.eyebrow}</p>
@@ -61,7 +67,7 @@
       <a href="#enquire" class="btn btn-ghost" style="margin-top:.8rem">Enquire now <span class="arrow">→</span></a>
     </div>
     <div class="split-media reveal" data-d="1">
-      <img src="/assets/img/lifestyle-hammock.jpg" alt="A hammock strung between palms in dappled island light" loading="lazy" decoding="async" />
+      <Pic picture={hammockPic} alt="A hammock strung between palms in dappled island light" sizes="(min-width: 821px) 50vw, 100vw" />
       <span class="tag">Pongwe · slow mornings</span>
     </div>
   </div>
@@ -168,7 +174,7 @@
 
 <!-- 06 · WHY INVEST -->
 <section class="invest section-pad" id="invest">
-  <div class="invest-bg"><img src="/assets/img/beach-palm.jpg" alt="" aria-hidden="true" loading="lazy" decoding="async" /></div>
+  <div class="invest-bg"><Pic picture={beachPalmPic} alt="" aria-hidden="true" /></div>
   <div class="wrap">
     <div class="reveal" style="max-width:680px">
       <p class="eyebrow">Why invest in Pongwe, Zanzibar</p>
@@ -188,7 +194,7 @@
 <section class="section-pad" id="inside">
   <div class="wrap split flip">
     <div class="split-media reveal">
-      <img src="/assets/img/interior-lamp.jpg" alt="Open-plan living and dining beneath woven pendant lights" loading="lazy" decoding="async" />
+      <Pic picture={interiorLampPic} alt="Open-plan living and dining beneath woven pendant lights" sizes="(min-width: 821px) 50vw, 100vw" />
       <span class="tag">Open-plan living · 42 m²</span>
     </div>
     <div class="reveal" data-d="1">
@@ -325,7 +331,7 @@
 
 <!-- 09 · CLOSING CTA -->
 <section class="closing section-pad" id="brochure">
-  <div class="closing-bg"><img src="/assets/img/pool.jpg" alt="" aria-hidden="true" loading="lazy" decoding="async" /></div>
+  <div class="closing-bg"><Pic picture={poolPic} alt="" aria-hidden="true" /></div>
   <div class="wrap reveal">
     <p class="eyebrow center" style="justify-content:center">Experience an escape</p>
     <h2>Discover your next Zanzibar investment.</h2>
