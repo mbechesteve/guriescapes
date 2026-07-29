@@ -43,7 +43,7 @@ export const defaultSiteContent = {
   floorPlans: [
     { src: '/assets/img/site-plan.jpg', alt: 'Site plan of Villa A and Villa B', caption: 'Site plan — the two villas, each on its own walled plot' },
     { src: '/assets/img/villa-a-overview.jpg', alt: 'Villa A layout overview', caption: 'Villa A — layout: living, kitchen, pool, two bedrooms and gardens' },
-    { src: '/assets/img/villa-a-floorplan.jpg', alt: 'Villa A floor plan', caption: 'Villa A floor plan (Villa B is mirrored)' }
+    { src: '/assets/img/villa-a-floorplan.jpg', alt: 'Villa A floor plan', caption: 'Villa A floor plan (Villa B is mirrored)', wide: true }
   ],
   progress: [],
   availability: { reserved: '', total: '', note: '' },
@@ -187,6 +187,15 @@ export const MIGRATION = {
       path: 'developer.since',
       oldValue: '2 years',
       newValue: '4 years'
+    },
+    {
+      path: 'floorPlans',
+      oldValue: [
+        { src: '/assets/img/site-plan.jpg', alt: 'Site plan of Villa A and Villa B', caption: 'Site plan — the two villas, each on its own walled plot' },
+        { src: '/assets/img/villa-a-overview.jpg', alt: 'Villa A layout overview', caption: 'Villa A — layout: living, kitchen, pool, two bedrooms and gardens' },
+        { src: '/assets/img/villa-a-floorplan.jpg', alt: 'Villa A floor plan', caption: 'Villa A floor plan (Villa B is mirrored)' }
+      ],
+      newValue: defaultSiteContent.floorPlans
     },
     {
       path: 'contact.calendly',

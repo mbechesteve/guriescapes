@@ -234,7 +234,7 @@
     <div class="reveal" style="max-width:560px"><p class="eyebrow">Floor plans</p><h2>Every square metre, considered.</h2></div>
     <div class="plan-grid reveal">
       {#each floorPlans as p, i}
-        <figure class="plan">
+        <figure class="plan" class:wide={p.wide}>
           <a href={p.src} aria-label={`View larger — ${p.caption || p.alt || 'villa floor plan'}`} on:click|preventDefault={() => planLightbox.open(i)}>
             <img src={p.src} alt={p.alt || 'Villa floor plan'} loading="lazy" decoding="async" />
             <span class="zoom">
@@ -397,6 +397,7 @@
   }
 
   .plan-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.2rem; margin-top: 2rem; }
+  @media (min-width: 700px) { .plan.wide { grid-column: span 2; } }
   .plan img, .prog img { width: 100%; height: auto; border-radius: 12px; display: block; }
   .plan figcaption, .prog figcaption { margin-top: .6rem; font-size: .85rem; color: var(--ink-soft); }
   .prog-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-top: 2rem; }

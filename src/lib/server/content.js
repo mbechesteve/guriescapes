@@ -5,7 +5,7 @@ import { computeSiteMigration } from './migrate';
 // Bump this whenever defaults change and you want the change pushed to an
 // already-seeded database exactly once. Each bump re-applies the corrected
 // defaults a single time, then leaves admin edits alone until the next bump.
-const CONTENT_VERSION = 6;
+const CONTENT_VERSION = 7;
 
 let synced = false;
 
