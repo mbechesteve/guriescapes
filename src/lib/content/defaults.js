@@ -11,14 +11,14 @@ export const defaultSiteContent = {
   },
   metrics: [
     { num: 'USD 90k', label: 'Starting price', cap: 'Per villa, leasehold' },
-    { num: '15–18%', label: 'Target gross yield', cap: 'Short-stay, depending on unit & season' },
-    { num: '20%', label: 'Down payment', cap: 'Tailored milestone payment plans' },
+    { num: '18–22%', label: 'Target gross yield', cap: 'Short-stay, depending on unit & season' },
+    { num: '10%', label: 'Down payment', cap: 'Tailored milestone payment plans' },
     { num: '30–40%', label: 'Capital appreciation', cap: 'Projected land growth to 2027*' }
   ],
   developer: {
     eyebrow: 'About the developer',
     heading: 'Built by Guri Build Zanzibar.',
-    since: '2 years',
+    since: '4 years',
     body: [
       'Guri Build Zanzibar is the development company behind Guri Escapes Pongwe, a collection of private pool villas designed for island living and managed rental income.',
       'Building on the project-delivery experience of Guri Build Kenya, we manage the full development journey: land, design, approvals, construction, buyer reporting and handover. After completion, Guri Escapes manages reservations, guests, maintenance and owner returns.',
@@ -173,6 +173,21 @@ export const MIGRATION = {
     'contact.calendly': 'https://calendly.com/guriescapes-sales/discovery-call'
   },
   corrections: [
+    {
+      path: 'metrics.1.num',
+      oldValue: '15–18%',
+      newValue: '18–22%'
+    },
+    {
+      path: 'metrics.2.num',
+      oldValue: '20%',
+      newValue: '10%'
+    },
+    {
+      path: 'developer.since',
+      oldValue: '2 years',
+      newValue: '4 years'
+    },
     {
       path: 'contact.calendly',
       oldValue: '',

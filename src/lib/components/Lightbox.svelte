@@ -1,0 +1,81 @@
+<script>
+  import { onMount } from 'svelte';
+
+  /** @type {{src:string, alt:string}[]} */
+  export let images = [];
+  export let backLabel = 'Back to gallery';
+
+  let isOpen = false;
+  let current = 0;
+
+  $: item = images[current] || { src: '', alt: '' };
+
+  export function open(i) {
+    current = i;
+    isOpen = true;
+    document.body.style.overflow = 'hidden';
+  }
+  function close() {
+    isOpen = false;
+    document.body.style.overflow = '';
+  }
+  function show(i) {
+    current = (i + images.length) % images.length;
+  }
+
+  function onKey(e) {
+    if (!isOpen) return;
+    if (e.key === 'Escape') close();
+    else if (e.key === 'ArrowRight') show(current + 1);
+    else if (e.key === 'ArrowLeft') show(current - 1);
+  }
+
+  let tx = 0,
+    ty = 0;
+  function touchStart(e) {
+    tx = e.changedTouches[0].clientX;
+    ty = e.changedTouches[0].clientY;
+  }
+  function touchEnd(e) {
+    const dx = e.changedTouches[0].clientX - tx;
+    const dy = e.changedTouches[0].clientY - ty;
+    if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) show(current + (dx < 0 ? 1 : -1));
+    else if (dy > 80 && Math.abs(dy) > Math.abs(dx)) close();
+  }
+
+  onMount(() => {
+    window.addEventListener('keydown', onKey);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+    };
+  });
+</script>
+
+<div
+  class="lb"
+  class:open={isOpen}
+  role="dialog"
+  aria-modal="true"
+  aria-label="Image viewer"
+  on:touchstart={touchStart}
+  on:touchend={touchEnd}
+>
+  <button class="lb-btn lb-close" aria-label="Close (back)" on:click={close}>
+    <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" /></svg>
+  </button>
+  <button class="lb-btn lb-prev" aria-label="Previous image" on:click={() => show(current - 1)}>
+    <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" /></svg>
+  </button>
+  <button class="lb-btn lb-next" aria-label="Next image" on:click={() => show(current + 1)}>
+    <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" /></svg>
+  </button>
+  <div class="lb-stage" on:click|self={close}>
+    <img class="lb-img" src={item.src} alt={item.alt} loading="lazy" decoding="async" />
+  </div>
+  <div class="lb-bar">
+    {#if item.alt}<span class="lb-caption">{item.alt}</span>{/if}
+    <span class="lb-count">{current + 1} / {images.length}</span>
+    <button class="lb-back" on:click={close}>&larr; {backLabel}</button>
+  </div>
+</div>

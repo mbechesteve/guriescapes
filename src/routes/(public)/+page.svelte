@@ -1,6 +1,7 @@
 <script>
   import EnquiryForm from '$lib/components/EnquiryForm.svelte';
   import Gallery from '$lib/components/Gallery.svelte';
+  import Lightbox from '$lib/components/Lightbox.svelte';
   import Pic from '$lib/components/Pic.svelte';
   import { brochureIntent } from '$lib/stores/enquiry';
   import { orgLd, faqLd, ldScript } from '$lib/seo';
@@ -20,6 +21,8 @@
   $: developer = data.site.developer || {};
   $: renders = data.site.renders || [];
   $: floorPlans = data.site.floorPlans || [];
+  $: planImages = floorPlans.map((p) => ({ src: p.src, alt: p.caption || p.alt || 'Villa floor plan' }));
+  let planLightbox;
   $: progress = data.site.progress || [];
   $: trustBar = data.site.trustBar || {};
   $: testimonials = data.site.testimonials || [];
@@ -181,7 +184,7 @@
       <h2 style="color:var(--cream)">The headline performer in East African property.</h2>
     </div>
     <div class="invest-stats">
-      <div class="invest-stat reveal"><div class="num">15–18%</div><div class="lab">ROI potential</div><div class="cap">Target gross yields for Zanzibar villas — best in the region.</div></div>
+      <div class="invest-stat reveal"><div class="num">18–22%</div><div class="lab">ROI potential</div><div class="cap">Target gross yields for Zanzibar villas — best in the region.</div></div>
       <div class="invest-stat reveal" data-d="1"><div class="num">65%+</div><div class="lab">Occupancy</div><div class="cap">Island-wide and rising with record tourism.</div></div>
       <div class="invest-stat reveal" data-d="2"><div class="num">30–40%</div><div class="lab">Capital growth</div><div class="cap">Projected land appreciation to 2027.</div></div>
       <div class="invest-stat reveal" data-d="3"><div class="num">100%</div><div class="lab">International buyers</div><div class="cap">Secure leasehold structure built for foreign owners.</div></div>
@@ -230,10 +233,19 @@
   <div class="wrap">
     <div class="reveal" style="max-width:560px"><p class="eyebrow">Floor plans</p><h2>Every square metre, considered.</h2></div>
     <div class="plan-grid reveal">
-      {#each floorPlans as p}
-        <figure class="plan"><img src={p.src} alt={p.alt || 'Villa floor plan'} loading="lazy" decoding="async" />{#if p.caption}<figcaption>{p.caption}</figcaption>{/if}</figure>
+      {#each floorPlans as p, i}
+        <figure class="plan">
+          <a href={p.src} aria-label={`View larger — ${p.caption || p.alt || 'villa floor plan'}`} on:click|preventDefault={() => planLightbox.open(i)}>
+            <img src={p.src} alt={p.alt || 'Villa floor plan'} loading="lazy" decoding="async" />
+            <span class="zoom">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7" /><path d="M21 21l-4-4M11 8v6M8 11h6" /></svg>
+            </span>
+          </a>
+          {#if p.caption}<figcaption>{p.caption}</figcaption>{/if}
+        </figure>
       {/each}
     </div>
+    <Lightbox bind:this={planLightbox} images={planImages} backLabel="Back to floor plans" />
   </div>
 </section>
 {/if}
@@ -278,7 +290,7 @@
     </div>
     <div class="steps">
       <div class="step reveal"><span class="dot"></span><span class="st-n">01</span><h3>Choose your villa</h3><p>Select Villa A, Villa B, or both — designed for resort-grade living and strong rental performance.</p></div>
-      <div class="step reveal" data-d="1"><span class="dot"></span><span class="st-n">02</span><h3>Reserve with a deposit</h3><p>Secure your villa with a 20% deposit that confirms availability and locks today's pricing.</p></div>
+      <div class="step reveal" data-d="1"><span class="dot"></span><span class="st-n">02</span><h3>Reserve with a deposit</h3><p>Secure your villa with a 10% deposit that confirms availability and locks today's pricing.</p></div>
       <div class="step reveal" data-d="2"><span class="dot"></span><span class="st-n">03</span><h3>Pay to milestones</h3><p>Payments release against certified construction milestones — a clear, manageable structure throughout the build.</p></div>
       <div class="step reveal" data-d="3"><span class="dot"></span><span class="st-n">04</span><h3>Earn, hands-free</h3><p>On completion your villa joins the managed rental pool, generating income with regular owner distributions.</p></div>
     </div>

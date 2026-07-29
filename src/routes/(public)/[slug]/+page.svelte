@@ -77,7 +77,7 @@
     <div class="reveal">
       <p class="eyebrow">Enquire</p>
       <h2 style="color:var(--cream)">Reserve {v.name.split(' — ')[0]}.</h2>
-      <p style="color:rgba(252,248,239,.82);margin-top:1.2rem;max-width:36ch">Secure today's pricing with a 20% deposit, or request the full brochure with floor plans. Our team will be in touch shortly.</p>
+      <p style="color:rgba(252,248,239,.82);margin-top:1.2rem;max-width:36ch">Secure today's pricing with a 10% deposit, or request the full brochure with floor plans. Our team will be in touch shortly.</p>
       <div class="contact-line">
         <a href={`mailto:${contact.email}`}><svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="M3 7l9 6 9-6" /></svg> {contact.email}</a>
         <a href={wa}><svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21l1.6-5A8.5 8.5 0 1 1 8 19.4z" /></svg> WhatsApp · start chat</a>

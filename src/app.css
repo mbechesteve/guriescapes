@@ -376,19 +376,21 @@ body.nav-open .site-header.scrolled{
 .plot-facts .pf-v{font-family:var(--f-display);font-size:1.6rem}
 
 /* ---------- Lightbox ---------- */
-.gallery a{position:relative}
-.gallery a::after{
+.plan a{display:block;border-radius:12px;overflow:hidden;cursor:zoom-in}
+.gallery a,.plan a{position:relative}
+.gallery a::after,.plan a::after{
   content:"";position:absolute;inset:0;background:rgba(40,43,20,.0);
   transition:background .35s var(--ease);pointer-events:none;
 }
-.gallery a:hover::after{background:rgba(40,43,20,.18)}
-.gallery a .zoom{
+.gallery a:hover::after,.plan a:hover::after{background:rgba(40,43,20,.18)}
+.gallery a .zoom,.plan a .zoom{
   position:absolute;top:12px;right:12px;width:38px;height:38px;border-radius:50%;
   background:rgba(252,248,239,.92);color:var(--sage);display:grid;place-items:center;
   opacity:0;transform:scale(.8);transition:.3s var(--ease);pointer-events:none;z-index:2;
 }
-.gallery a:hover .zoom,.gallery a:focus-visible .zoom{opacity:1;transform:none}
-.gallery a .zoom svg{width:18px;height:18px}
+.gallery a:hover .zoom,.gallery a:focus-visible .zoom,
+.plan a:hover .zoom,.plan a:focus-visible .zoom{opacity:1;transform:none}
+.gallery a .zoom svg,.plan a .zoom svg{width:18px;height:18px}
 
 .lb{
   position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;
