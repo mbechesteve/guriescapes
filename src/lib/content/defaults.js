@@ -61,7 +61,7 @@ export const defaultSiteContent = {
   faq: [
     {
       q: 'Can international buyers own property in Zanzibar?',
-      a: 'Yes. Foreign buyers hold a long leasehold — up to 99 years (33-year renewable terms) — most straightforwardly inside government-approved (ZIPA) developments. A single villa at USD 90,000 is a leasehold purchase; the investment residence permit is a separate, optional route that requires a total qualifying investment from USD 100,000, which buyers typically reach by taking both villas or an upgraded, furnished package. We provide full legal and visa guidance for a smooth, compliant process.'
+      a: 'Yes. Foreigners do not own land outright in Zanzibar — they hold long leases, most straightforwardly inside a government-approved Zanzibar Commission of Tourism (ZCT) land lease structure. Guri Escapes Pongwe is set up to put buyers on that secure, recognised footing from the start, with tenure of up to 99 years — the standard route for foreign buyers.'
     },
     {
       q: 'Is the villa managed for me?',
@@ -217,10 +217,17 @@ export const MIGRATION = {
       oldValue: 'Projected land growth to 2026*',
       newValue: 'Projected land growth to 2027*'
     },
+    // Two entries for the same path cover both earlier stored wordings; at most
+    // one can match, and an admin-edited answer matches neither and is kept.
     {
       path: 'faq.0.a',
       oldValue: 'Yes. Foreign buyers hold a long leasehold, up to 99 years, broken down to 33 years renewable, most straightforwardly inside government-approved (ZIPA) developments. A qualifying purchase (from USD 100,000) can also support an investment residence permit. We provide full legal and visa guidance for a smooth, compliant process.',
-      newValue: 'Yes. Foreign buyers hold a long leasehold — up to 99 years (33-year renewable terms) — most straightforwardly inside government-approved (ZIPA) developments. A single villa at USD 90,000 is a leasehold purchase; the investment residence permit is a separate, optional route that requires a total qualifying investment from USD 100,000, which buyers typically reach by taking both villas or an upgraded, furnished package. We provide full legal and visa guidance for a smooth, compliant process.'
+      newValue: defaultSiteContent.faq[0].a
+    },
+    {
+      path: 'faq.0.a',
+      oldValue: 'Yes. Foreign buyers hold a long leasehold — up to 99 years (33-year renewable terms) — most straightforwardly inside government-approved (ZIPA) developments. A single villa at USD 90,000 is a leasehold purchase; the investment residence permit is a separate, optional route that requires a total qualifying investment from USD 100,000, which buyers typically reach by taking both villas or an upgraded, furnished package. We provide full legal and visa guidance for a smooth, compliant process.',
+      newValue: defaultSiteContent.faq[0].a
     },
     {
       path: 'faq.2.a',
